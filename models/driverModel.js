@@ -47,7 +47,6 @@ const driverSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
-            required: [true, 'Please provide a gender'],
             enum: {
                 values: ['male', 'female'],
                 message: 'Gender is either: male or female'
@@ -57,15 +56,19 @@ const driverSchema = new mongoose.Schema(
             type: String,
             default: 'default.jpg'
         },
-        photo_avatar_ext: {
-            type: String
-        },
+        photo_avatar_ext: String,
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,
         nationality: String,
-        license_no: String,
-        cnic: String,
+        license_no: {
+            type: String,
+            required: [true, 'Please provide a license no.']
+        },
+        cnic: {
+            type: String,
+            required: [true, 'Please provide a cnic.']
+        },
         dob: Date,
         isActive: {
             type: Boolean,
@@ -75,6 +78,7 @@ const driverSchema = new mongoose.Schema(
         address: {
             type: String,
             trim: true,
+            required: [true, 'Please provide an address'],
             maxlength: [40, 'Address must be less or equal then 30 characters.'],
             minlength: [8, 'Address must be more or equal then 8 characters.']
         },

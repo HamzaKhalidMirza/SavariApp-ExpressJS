@@ -47,7 +47,6 @@ const clientSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
-            required: [true, 'Please provide a gender'],
             enum: {
                 values: ['male', 'female'],
                 message: 'Gender is either: male or female'
