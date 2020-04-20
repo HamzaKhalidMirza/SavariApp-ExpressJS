@@ -3,6 +3,14 @@ const validator = require('validator');
 
 const reviewSchema = new mongoose.Schema(
     {
+        givenBy: {
+            type: String,
+            required: [true, 'A review must have a givenBy role.'],
+            enum: {
+                values: ['client', 'driver'],
+                message: 'Review is either given by: client or driver'
+            }
+        },
         review: {
             type: String,
             maxlength: [100, 'Review must be less or equal then 100 characters.'],
@@ -18,6 +26,21 @@ const reviewSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
             select: false
+        },
+        trip: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Trip',
+            required: [true, 'Review must belong to a trip.']
+        },
+        client: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Client',
+            required: [true, 'Review must belong to a client.']
+        },
+        driver: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Driver',
+            required: [true, 'Review must belong to a driver.']
         }
     },
     {

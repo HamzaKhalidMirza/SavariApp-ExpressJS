@@ -60,6 +60,33 @@ const tripSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
             select: false
+        },
+        startLocation: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            staticImage: String
+        },
+        endLocation: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            staticImage: String
+        },
+        driver: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Driver',
+            required: [true, 'Trip must belong to a driver.']
         }
     },
     {

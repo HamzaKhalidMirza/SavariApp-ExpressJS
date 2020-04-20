@@ -48,6 +48,42 @@ const bookingSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
             select: false
+        },
+        startLocation: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            staticImage: String
+        },
+        endLocation: {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+            staticImage: String
+        },
+        client: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Client',
+            required: [true, 'Booking must belong to a client.']
+        },
+        trip: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Trip',
+            required: [true, 'Booking must belong to a trip.']
+        },
+        payment: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Payment',
         }
     },
     {

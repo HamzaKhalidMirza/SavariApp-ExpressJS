@@ -109,6 +109,11 @@ const driverSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
             select: false
+        },
+        vehicle: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Vehicle',
+            required: [true, 'Driver must have a vehicle.']
         }
     },
     {
