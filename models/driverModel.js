@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const clientSchema = new mongoose.Schema(
+const driverSchema = new mongoose.Schema(
     {
         username: {
             type: String,
@@ -64,11 +64,23 @@ const clientSchema = new mongoose.Schema(
         passwordResetToken: String,
         passwordResetExpires: Date,
         nationality: String,
+        license_no: String,
+        cnic: String,
         dob: Date,
         isActive: {
             type: Boolean,
             default: true,
             select: false
+        },
+        address: {
+            type: String,
+            trim: true,
+            maxlength: [40, 'Address must be less or equal then 30 characters.'],
+            minlength: [8, 'Address must be more or equal then 8 characters.']
+        },
+        postal_code: {
+            type: String,
+            validate: [validator.isPostalCodeLocales, 'Please provide valid postal code']
         },
         age: {
             type: number,
