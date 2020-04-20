@@ -15,8 +15,14 @@ const paymentSchema = new mongoose.Schema(
             type: boolean,
             default: false
         },
-        totalFare: Number,
-        totalPaid: Number,
+        totalFare: {
+            type: Number,
+            require: [true, "Please provide total fare"],
+        },
+        totalPaid: {
+            type: Number,
+            require: [true, "Please provide total paid"],
+        },
         createdAt: {
             type: Date,
             default: Date.now(),
