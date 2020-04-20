@@ -52,11 +52,11 @@ const clientSchema = new mongoose.Schema(
                 message: 'Gender is either: male or female'
             }
         },
-        photo_avatar: {
+        photoAvatar: {
             type: String,
             default: 'default.jpg'
         },
-        photo_avatar_ext: {
+        photoAvatarExt: {
             type: String
         },
         passwordChangedAt: Date,
@@ -93,7 +93,11 @@ const clientSchema = new mongoose.Schema(
             default: Date.now(),
             select: false
         }
-    }
+    },
+    {
+      toJSON: { virtuals: true },
+      toObject: { virtuals: true }
+    }  
 );
 
 const Client = mongoose.model('Client', clientSchema);

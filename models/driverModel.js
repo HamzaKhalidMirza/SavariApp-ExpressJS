@@ -52,20 +52,20 @@ const driverSchema = new mongoose.Schema(
                 message: 'Gender is either: male or female'
             }
         },
-        photo_avatar: {
+        photoAvatar: {
             type: String,
             default: 'default.jpg'
         },
-        photo_avatar_ext: String,
+        photoAvatarExt: String,
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,
         nationality: String,
-        license_no: {
+        licenseNo: {
             type: String,
             required: [true, 'Please provide a license no.']
         },
-        cnic: {
+        cnicNo: {
             type: String,
             required: [true, 'Please provide a cnic.']
         },
@@ -82,7 +82,7 @@ const driverSchema = new mongoose.Schema(
             maxlength: [40, 'Address must be less or equal then 30 characters.'],
             minlength: [8, 'Address must be more or equal then 8 characters.']
         },
-        postal_code: {
+        postalCode: {
             type: String,
             validate: [validator.isPostalCodeLocales, 'Please provide valid postal code']
         },
@@ -110,9 +110,13 @@ const driverSchema = new mongoose.Schema(
             default: Date.now(),
             select: false
         }
-    }
+    },
+    {
+      toJSON: { virtuals: true },
+      toObject: { virtuals: true }
+    }  
 );
 
-const Client = mongoose.model('Client', clientSchema);
+const Driver = mongoose.model('Driver', driverSchema);
 
-module.exports = Client;
+module.exports = Driver;

@@ -15,7 +15,7 @@ const vehicleSchema = new mongoose.Schema(
             type: String,
             require: [true, "Please provide vehicle make"]
         },
-        registration_no: {
+        registrationNo: {
             type: String,
             require: [true, "Please provide vehicle registration no"]
         },
@@ -27,12 +27,12 @@ const vehicleSchema = new mongoose.Schema(
             type: Number,
             require: [true, "Please provide vehicle milage"]
         },
-        photo_avatar: {
+        photoAvatar: {
             type: String,
             require: [true, "Please provide vehicle Photo"],
             default: 'default.jpg'
         },
-        pic_avatar_ext: String,
+        picAvatarExt: String,
         description: {
             type: String,
             trim: true,
@@ -54,5 +54,13 @@ const vehicleSchema = new mongoose.Schema(
             default: Date.now(),
             select: false
         }
-    }
+    },
+    {
+      toJSON: { virtuals: true },
+      toObject: { virtuals: true }
+    }  
 );
+
+const Vehicle = mongoose.model('Vehicle', vehicleSchema);
+
+module.exports = Vehicle;
