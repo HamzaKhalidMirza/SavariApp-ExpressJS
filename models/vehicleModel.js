@@ -17,6 +17,7 @@ const vehicleSchema = new mongoose.Schema(
         },
         registrationNo: {
             type: String,
+            unique: true,
             require: [true, "Please provide vehicle registration no"]
         },
         color: {
@@ -43,11 +44,11 @@ const vehicleSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            require: [true, "Please provide vehicle type"],
             enum: {
                 values: ['mini', 'moto', 'bike'],
                 message: 'Type is either: mini, moto or bike'
-            }
+            },
+            require: [true, "Please provide vehicle type"]
         },
         createdAt: {
             type: Date,
@@ -57,7 +58,7 @@ const vehicleSchema = new mongoose.Schema(
         driver: {
             type: mongoose.Schema.ObjectId,
             ref: 'Driver',
-            required: [true, 'Vehicle must belong to a driver.']
+            required: [true, 'Vehicle must belomg to a driver.']
         }
     },
     {

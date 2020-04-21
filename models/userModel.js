@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
     {
@@ -52,6 +54,11 @@ const userSchema = new mongoose.Schema(
                 message: 'Gender is either: male or female'
             }
         },
+        role: {
+            type: String,
+            enum: ['client', 'driver', 'admin'],
+            default: 'client'
+        },
         photoAvatar: {
             type: String,
             default: 'default.jpg'
@@ -62,12 +69,12 @@ const userSchema = new mongoose.Schema(
         passwordResetExpires: Date,
         nationality: String,
         licenseNo: {
-            type: String,
-            required: [true, 'Please provide a license no.']
+            type: String
+            // required: [true, 'Please provide a license no.']
         },
         cnicNo: {
-            type: String,
-            required: [true, 'Please provide a cnic.']
+            type: String
+            // required: [true, 'Please provide a cnic.']
         },
         dob: Date,
         isActive: {
@@ -78,19 +85,19 @@ const userSchema = new mongoose.Schema(
         address: {
             type: String,
             trim: true,
-            required: [true, 'Please provide an address'],
+            // required: [true, 'Please provide an address'],
             maxlength: [40, 'Address must be less or equal then 30 characters.'],
             minlength: [8, 'Address must be more or equal then 8 characters.']
         },
         postalCode: {
-            type: String,
-            validate: [validator.isPostalCodeLocales, 'Please provide valid postal code']
+            type: String
+            // validate: [validator.isPostalCodeLocales, 'Please provide valid postal code']
         },
         age: {
-            type: number,
+            type: Number,
             validate: {
                 validator: function (val) {
-                    return val > 15;
+                    return parseInt(val) > 15;
                 }
             }
         },
@@ -117,6 +124,23 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+userSchema.pre('save', async function (next) {
+    // Only run this function if password was actually modified
+    if (!this.isModified('password')) return next();
+
+    // Hash the password with cost of 12
+    this.password = await bcrypt.hash(this.password, 12);
+
+    next();
+});
+
+userSchema.methods.correctPassword = async function(
+    candidatePassword,
+    userPassword
+  ) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+  };
+  
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

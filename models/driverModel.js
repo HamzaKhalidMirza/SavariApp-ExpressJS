@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const driverSchema = new mongoose.Schema(
     {
@@ -52,6 +53,11 @@ const driverSchema = new mongoose.Schema(
                 message: 'Gender is either: male or female'
             }
         },
+        role: {
+            type: String,
+            enum: ['driver'],
+            default: 'driver'
+        },
         photoAvatar: {
             type: String,
             default: 'default.jpg'
@@ -83,11 +89,11 @@ const driverSchema = new mongoose.Schema(
             minlength: [8, 'Address must be more or equal then 8 characters.']
         },
         postalCode: {
-            type: String,
-            validate: [validator.isPostalCodeLocales, 'Please provide valid postal code']
+            type: String
+            // validate: [validator.isPostalCodeLocales, 'Please provide valid postal code']
         },
         age: {
-            type: number,
+            type: Number,
             validate: {
                 validator: function (val) {
                     return val > 15;
@@ -109,18 +115,29 @@ const driverSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
             select: false
-        },
-        vehicle: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Vehicle',
-            required: [true, 'Driver must have a vehicle.']
         }
     },
     {
-      toJSON: { virtuals: true },
-      toObject: { virtuals: true }
-    }  
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
 );
+
+driverSchema.pre('save', async function (next) {
+    // Only run this function if password was actually modified
+    if (!this.isModified('password')) return next();
+
+    // Hash the password with cost of 12
+    this.password = await bcrypt.hash(this.password, 12);
+
+    next();
+});
+
+driverSchema.methods.correctPassword = async function (
+    candidatePassword,
+    userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const Driver = mongoose.model('Driver', driverSchema);
 

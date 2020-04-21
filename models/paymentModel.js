@@ -12,7 +12,7 @@ const paymentSchema = new mongoose.Schema(
             }
         },
         isPaid: {
-            type: boolean,
+            type: Boolean,
             default: false
         },
         totalFare: {
