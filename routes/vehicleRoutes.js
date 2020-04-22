@@ -9,7 +9,7 @@ router
     .get(vehicleController.getAllVehicles)
     .post(
         // authController.restrictTo('admin'),
-        vehicleController.setDriverIds,
+        vehicleController.setDriverId,
         vehicleController.createVehicle
     );
 

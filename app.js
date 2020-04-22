@@ -63,14 +63,14 @@ app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/vehicles', vehicleRouter);
 app.use('/api/v1/reviews', reviewRouter);
 
-app.use('/', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      data: 'Express backend server'
-    }
-  });
-});
+// app.use('/', (req, res) => {
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       data: 'Express backend server'
+//     }
+//   });
+// });
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

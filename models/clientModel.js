@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const clientSchema = new mongoose.Schema(
     {
@@ -72,8 +73,8 @@ const clientSchema = new mongoose.Schema(
         dob: Date,
         isActive: {
             type: Boolean,
-            default: true,
-            select: false
+            default: true
+            // select: false
         },
         age: {
             type: Number,
@@ -116,10 +117,52 @@ clientSchema.pre('save', async function (next) {
     next();
 });
 
+clientSchema.pre('save', function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
+
+clientSchema.pre(/^find/, function (next) {
+    // this points to the current query
+    this.find({ isActive: { $ne: false } });
+    next();
+});
+
 clientSchema.methods.correctPassword = async function (
     candidatePassword,
-    userPassword ) {
+    userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+clientSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimestamp = parseInt(
+            this.passwordChangedAt.getTime() / 1000,
+            10
+        );
+
+        return JWTTimestamp < changedTimestamp;
+    }
+
+    // False means NOT changed
+    return false;
+};
+
+clientSchema.methods.createPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    // console.log({ resetToken }, this.passwordResetToken);
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
 };
 
 const Client = mongoose.model('Client', clientSchema);

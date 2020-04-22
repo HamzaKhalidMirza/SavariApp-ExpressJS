@@ -133,10 +133,52 @@ driverSchema.pre('save', async function (next) {
     next();
 });
 
+driverSchema.pre('save', function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
+
+driverSchema.pre(/^find/, function (next) {
+    // this points to the current query
+    this.find({ isActive: { $ne: false } });
+    next();
+});
+
 driverSchema.methods.correctPassword = async function (
     candidatePassword,
     userPassword) {
     return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+driverSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+    if (this.passwordChangedAt) {
+        const changedTimestamp = parseInt(
+            this.passwordChangedAt.getTime() / 1000,
+            10
+        );
+
+        return JWTTimestamp < changedTimestamp;
+    }
+
+    // False means NOT changed
+    return false;
+};
+
+driverSchema.methods.createPasswordResetToken = function () {
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    this.passwordResetToken = crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex');
+
+    // console.log({ resetToken }, this.passwordResetToken);
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
 };
 
 const Driver = mongoose.model('Driver', driverSchema);
