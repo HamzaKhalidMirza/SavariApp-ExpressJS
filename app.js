@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser')
 const morgan = require('morgan');
@@ -23,7 +24,7 @@ const app = express();
 /*
   Global MiddleWares
 */
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.options('*', cors());
 app.use(helmet());
@@ -39,7 +40,7 @@ app.use(
   })
 );
 const limiter = rateLimit({
-  max: 100,
+  max: 1000,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!'
 });

@@ -21,9 +21,16 @@ router.get('/me', clientController.getMe, clientController.getUser);
 router.delete('/deleteMe', clientController.getMe, clientController.deleteUser);
 router.patch('/deactivateMe', clientController.deactivateMe);
 router.patch('/updateMyPassword', authController.updatePassword);
+router.patch(
+    '/updateMe',
+    clientController.generatePasswordError,
+    clientController.uploadUserPhoto,
+    clientController.resizeUserPhoto,
+    clientController.updateMe
+);
 
 // Administration Related Routes
-router.use(authController.restrictTo('admin'));
+// router.use(authController.restrictTo('admin'));
 
 router
     .route('/')

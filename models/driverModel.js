@@ -62,7 +62,9 @@ const driverSchema = new mongoose.Schema(
             type: String,
             default: 'default.jpg'
         },
-        photoAvatarExt: String,
+        orignalPhoto: String,
+        // photoAvatarExt: String,
+        photoAvatarFile: String,
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,

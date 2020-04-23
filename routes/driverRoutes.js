@@ -17,9 +17,16 @@ router.get('/me', driverController.getMe, driverController.getUser);
 router.delete('/deleteMe', driverController.getMe, driverController.getUser);
 router.patch('/deactivateMe', driverController.deactivateMe);
 router.patch('/updateMyPassword', authController.updatePassword);
+router.patch(
+    '/updateMe',
+    driverController.generatePasswordError,
+    driverController.uploadUserPhoto,
+    driverController.resizeUserPhoto,
+    driverController.updateMe
+);
 
 // Administration Related Routes
-router.use(authController.restrictTo('admin'));
+// router.use(authController.restrictTo('admin'));
 
 // Vehicle related routes for a specific Driver
 router.use('/:driverId/vehicles', vehicleRouter);
