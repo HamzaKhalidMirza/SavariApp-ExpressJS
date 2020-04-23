@@ -17,12 +17,31 @@ router.post('/login', clientController.login);
 router.use(authController.protect);
 
 // Current User Related
-router.get('/me', clientController.getMe, clientController.getUser);
-router.delete('/deleteMe', clientController.getMe, clientController.deleteUser);
-router.patch('/deactivateMe', clientController.deactivateMe);
-router.patch('/updateMyPassword', authController.updatePassword);
+router.get(
+    '/me',
+    authController.restrictTo('client'),
+    clientController.getMe,
+    clientController.getUser
+);
+router.delete(
+    '/deleteMe',
+    authController.restrictTo('client'),
+    clientController.getMe,
+    clientController.deleteUser
+);
+router.patch(
+    '/deactivateMe',
+    authController.restrictTo('client'),
+    clientController.deactivateMe
+);
+router.patch(
+    '/updateMyPassword',
+    authController.restrictTo('client'),
+    authController.updatePassword
+);
 router.patch(
     '/updateMe',
+    authController.restrictTo('client'),
     clientController.generatePasswordError,
     clientController.uploadUserPhoto,
     clientController.resizeUserPhoto,

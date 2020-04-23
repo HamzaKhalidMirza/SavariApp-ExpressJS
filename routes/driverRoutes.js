@@ -13,12 +13,32 @@ router.post('/login', driverController.login);
 router.use(authController.protect);
 
 // Current User Related
-router.get('/me', driverController.getMe, driverController.getUser);
-router.delete('/deleteMe', driverController.getMe, driverController.getUser);
-router.patch('/deactivateMe', driverController.deactivateMe);
-router.patch('/updateMyPassword', authController.updatePassword);
+// Current User Related
+router.get(
+    '/me',
+    authController.restrictTo('driver'),
+    driverController.getMe,
+    driverController.getUser
+);
+router.delete(
+    '/deleteMe',
+    authController.restrictTo('driver'),
+    driverController.getMe,
+    driverController.deleteUser
+);
+router.patch(
+    '/deactivateMe',
+    authController.restrictTo('driver'),
+    driverController.deactivateMe
+);
+router.patch(
+    '/updateMyPassword',
+    authController.restrictTo('driver'),
+    authController.updatePassword
+);
 router.patch(
     '/updateMe',
+    authController.restrictTo('driver'),
     driverController.generatePasswordError,
     driverController.uploadUserPhoto,
     driverController.resizeUserPhoto,
