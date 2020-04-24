@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const randomGenerator = require("randomatic");
 
 const clientSchema = new mongoose.Schema(
     {
@@ -69,6 +70,9 @@ const clientSchema = new mongoose.Schema(
         passwordChangedAt: Date,
         passwordResetToken: String,
         passwordResetExpires: Date,
+        mobileCode: String,
+        mobileCodeExpires: Date,
+        countryCode: String,
         nationality: String,
         dob: Date,
         isActive: {

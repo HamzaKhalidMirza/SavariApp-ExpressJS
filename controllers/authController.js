@@ -1,11 +1,16 @@
 const Client = require('./../models/clientModel');
 const Driver = require('./../models/driverModel');
+const Mobile = require('./../models/mobileModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const Email = require('./../utils/email');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
+
+const accountSid = process.env.ACCOUNT_SID;
+const authToken = process.env.AUTH_TOKEN;
+const twilio = require('twilio')(accountSid, authToken);
 
 exports.checkPhoneExistance = Model =>
     catchAsync(async (req, res, next) => {
@@ -226,12 +231,7 @@ exports.forgotPassword = Model =>
             return next(new AppError('Please provide email address.', 400));
         }
 
-        let users;
-        if (Model === Client) {
-            users = 'clients'
-        } else if (Model === Driver) {
-            users = 'drivers'
-        }
+        const users = Model === Client ? 'clients' : 'drivers';
 
         // 1) Get user based on POSTed email
         const user = await Model.findOne({ email: req.body.email });
@@ -294,3 +294,129 @@ exports.resetPassword = Model =>
         createSendToken(user, 200, req, res);
     });
 
+exports.getVerificationCode = catchAsync(async (req, res, next) => {
+
+    if (!req.body.phone || !req.body.countryCode) {
+        return next(new AppError('Please provide phone number and country code.', 400));
+    }
+
+    const phone = req.body.countryCode + req.body.phone;
+
+    const data = await twilio.verify.services(process.env.SERVICE_ID)
+        .verifications.create({
+            to: phone,
+            channel: 'sms'
+        });
+
+    if (!data) {
+        return next(
+            new AppError('There was an error sending the code. Try again later!'),
+            500
+        );
+    }
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Code sent to mobile number!',
+        data: {
+            data
+        }
+    });
+
+    // // 1) Get Mobile based on POSTed phone number
+    // let mobile = await Mobile.findOne({ phone: req.body.phone });
+    // if (!mobile) {
+    //     mobile = await Mobile.create({
+    //         phone: req.body.phone,
+    //         countryCode: req.body.countryCode
+    //     });
+    // }
+
+    // 2) Generate the random code
+    // const verificationCode = mobile.createMobileCode();
+    // await mobile.save({ validateBeforeSave: false });
+
+    // 3) Send it to user's mobile number
+
+    // try {
+
+    //         // await twilio.messages.create({
+    //         //     to: phone,
+    //         //     from: process.env.MOBILECODE_FROM,
+    //         //     body: 'Your CabPool Verification Code:' + verificationCode
+    //         // });
+
+    //         res.status(200).json({
+    //             status: 'success',
+    //             message: 'Code sent to mobile number!',
+    //             data: {
+    //                 data
+    //             }
+    //         });
+    //     } catch (err) {
+    //         return next(
+    //             new AppError('There was an error sending the code. Try again later!'),
+    //             500
+    //         );
+    //     }
+});
+
+exports.verifyCode = catchAsync(async (req, res, next) => {
+
+    if (!req.body.phone || !req.body.countryCode) {
+        return next(new AppError('Please provide phone number and country code.', 400));
+    }
+    if (!req.body.code) {
+        return next(new AppError('Please provide verification code.', 400));
+    }
+
+    const phone = req.body.countryCode + req.body.phone;
+
+    const data = await twilio.verify.services(process.env.SERVICE_ID)
+        .verificationChecks.create({
+            to: phone,
+            code: req.body.code
+        });
+
+    if (!data) {
+        return next(
+            new AppError('There was an error sending the code. Try again later!'),
+            500
+        );
+    }
+
+    if (data.status === 'approved') {
+        res.status(200).json({
+            status: 'success',
+            message: 'Code Verified!',
+            data: {
+                data
+            }
+        });
+    } else {
+        return next(
+            new AppError('Invalid Code. Try again later!'),
+            401
+        );
+    }
+
+    // // 1) Get mobile based on the code
+    // const hashedToken = crypto
+    //     .createHash('sha256')
+    //     .update(req.params.code)
+    //     .digest('hex');
+
+    // const mobile = await Mobile.findOne({
+    //     mobileCodeToken: hashedToken,
+    //     mobileCodeExpires: { $gt: Date.now() }
+    // });
+
+    // // 2) If code has not expired, and there is mobile
+    // if (!mobile) {
+    //     return next(new AppError('Code is invalid or has expired', 400));
+    // }
+
+    // mobile.mobileCodeToken = undefined;
+    // mobile.mobileCodeExpires = undefined;
+    // await mobile.save();
+});

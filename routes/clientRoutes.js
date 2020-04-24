@@ -7,6 +7,8 @@ const router = express.Router();
 // Signup Related Routes
 router.get('/checkPhoneExistance', clientController.checkPhoneExistance);
 router.get('/checkEmailExistance', clientController.checkEmailExistance);
+router.post('/getVerificationCode', clientController.getVerificationCode);
+router.patch('/verifyCode', clientController.verifyCode);
 router.post('/signup', clientController.signup);
 
 // Login Related Routes

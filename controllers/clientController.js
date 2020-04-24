@@ -106,6 +106,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 // Signup Related Controllers
 exports.checkPhoneExistance = authController.checkPhoneExistance(Client);
 exports.checkEmailExistance = authController.checkEmailExistance(Client);
+exports.getVerificationCode = authController.getVerificationCode;
+exports.verifyCode = authController.verifyCode;
 exports.signup = authController.signup(Client);
 
 // Login Related Controllers
