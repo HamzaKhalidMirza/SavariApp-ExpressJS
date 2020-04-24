@@ -126,6 +126,12 @@ const driverSchema = new mongoose.Schema(
     }
 );
 
+driverSchema.virtual('vehicle', {
+    ref: 'Vehicle',
+    foreignField: 'driver',
+    localField: '_id'
+});
+
 driverSchema.pre('save', async function (next) {
     // Only run this function if password was actually modified
     if (!this.isModified('password')) return next();

@@ -14,6 +14,23 @@ exports.setDriverId = async (req, res, next) => {
     next();
 };
 
+exports.getMyVehicle = async (req, res, next) => {
+    const driverId = req.user.id;
+    console.log('driverId',driverId);
+
+    const vehicle = await Vehicle.findOne({ driver: driverId });
+    if(!vehicle) {
+        return next(new AppError('You don\' have any vehicle currently.'));
+    }
+    
+    res.status(200).json({
+        status: 'success',
+        data: {
+            vehicle
+        }
+    });
+};
+
 exports.getVehicle = factory.getOne(Vehicle);
 exports.getAllVehicles = factory.getAll(Vehicle);
 exports.createVehicle = factory.createOne(Vehicle);

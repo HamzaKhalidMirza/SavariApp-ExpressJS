@@ -62,10 +62,19 @@ const vehicleSchema = new mongoose.Schema(
         }
     },
     {
-      toJSON: { virtuals: true },
-      toObject: { virtuals: true }
-    }  
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true }
+    }
 );
+
+// vehicleSchema.pre(/^find/, function (next) {
+//     this.populate({
+//         path: 'driver',
+//         select: `-photoAvatar -photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
+//         -isActive -createdAt -ratingsAverage -ratingsQuantity`
+//     });
+//     next();
+// });
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);
 

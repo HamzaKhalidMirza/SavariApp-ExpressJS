@@ -4,11 +4,22 @@ const authController = require('./../controllers/authController');
 
 const router = express.Router({ mergeParams: true });
 
+// Protect all routes after this middleware
+router.use(authController.protect);
+
+router.get(
+    '/getMyVehicle',
+    authController.restrictTo('driver'),
+    vehicleController.getMyVehicle
+);
+
+// Administration Related Routes
+// router.use(authController.restrictTo('admin'));
+
 router
     .route('/')
     .get(vehicleController.getAllVehicles)
     .post(
-        // authController.restrictTo('admin'),
         vehicleController.setDriverId,
         vehicleController.createVehicle
     );

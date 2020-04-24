@@ -115,7 +115,7 @@ exports.forgotPassword = authController.forgotPassword(Driver);
 exports.resetPassword = authController.resetPassword(Driver);
 
 // Administration Related Controllers
-exports.getUser = factory.getOne(Driver);
+exports.getUser = factory.getOne(Driver, { path: 'vehicle' });
 exports.getAllUsers = factory.getAll(Driver);
 exports.createUser = factory.createOne(Driver);
 // Do NOT update passwords with this!

@@ -59,8 +59,8 @@ router.patch(
 
 router
     .route('/')
-    .get(clientController.getAllUsers);
-// .post(clientController.createUser);
+    .get(clientController.getAllUsers)
+    .post(clientController.createUser);
 
 router
     .route('/:id')

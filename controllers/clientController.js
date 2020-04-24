@@ -121,7 +121,15 @@ exports.resetPassword = authController.resetPassword(Client);
 // Administration Related Controllers
 exports.getAllUsers = factory.getAll(Client);
 exports.getUser = factory.getOne(Client);
-exports.createUser = factory.createOne(Client);
 // Do NOT update passwords with this!
 exports.updateUser = factory.updateOne(Client);
 exports.deleteUser = factory.deleteOne(Client);
+
+
+exports.createUser = (req, res) => {
+    res.status(500).json({
+        status: 'error',
+        message: 'This route is not defined! Please use /signup instead'
+    });
+};
+

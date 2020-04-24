@@ -17,7 +17,6 @@ router.patch('/resetPassword/:token', driverController.resetPassword);
 router.use(authController.protect);
 
 // Current User Related
-// Current User Related
 router.get(
     '/me',
     authController.restrictTo('driver'),
@@ -49,11 +48,11 @@ router.patch(
     driverController.updateMe
 );
 
-// Administration Related Routes
-// router.use(authController.restrictTo('admin'));
-
 // Vehicle related routes for a specific Driver
 router.use('/:driverId/vehicles', vehicleRouter);
+
+// Administration Related Routes
+// router.use(authController.restrictTo('admin'));
 
 router
     .route('/')
