@@ -9,6 +9,10 @@ const router = express.Router();
 router.get('/verifyPhoneExistance', driverController.verifyPhoneExistance);
 router.post('/login', driverController.login);
 
+// Frogot Password Related Routes
+router.post('/forgotPassword', driverController.forgotPassword);
+router.patch('/resetPassword/:token', driverController.resetPassword);
+
 // Protect all routes after this middleware
 router.use(authController.protect);
 

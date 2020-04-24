@@ -19,7 +19,13 @@ const vehicleRouter = require('./routes/vehicleRoutes');
 const paymentRouter = require('./routes/paymentRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 
+// Start express app
 const app = express();
+
+app.enable('trust proxy');
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 /*
   Global MiddleWares

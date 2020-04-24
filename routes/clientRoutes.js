@@ -13,6 +13,10 @@ router.post('/signup', clientController.signup);
 router.get('/verifyPhoneExistance', clientController.verifyPhoneExistance);
 router.post('/login', clientController.login);
 
+// Frogot Password Related Routes
+router.post('/forgotPassword', clientController.forgotPassword);
+router.patch('/resetPassword/:token', clientController.resetPassword);
+
 // Protect all routes after this middleware
 router.use(authController.protect);
 

@@ -2,8 +2,10 @@ const Client = require('./../models/clientModel');
 const Driver = require('./../models/driverModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const Email = require('./../utils/email');
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const crypto = require('crypto');
 
 exports.checkPhoneExistance = Model =>
     catchAsync(async (req, res, next) => {
@@ -92,13 +94,16 @@ const createSendToken = (user, statusCode, req, res) => {
 
 exports.signup = Model =>
     catchAsync(async (req, res, next) => {
-        const newClient = await Model.create({
+        const newUser = await Model.create({
             phone: req.body.phone,
             email: req.body.email,
             password: req.body.password
         });
 
-        createSendToken(newClient, 201, req, res);
+        const url = `${req.protocol}://${req.get('host')}/me`;
+        await new Email(newUser, url).sendWelcome();
+
+        createSendToken(newUser, 201, req, res);
     });
 
 exports.login = Model =>
@@ -189,11 +194,11 @@ exports.restrictTo = (...roles) => {
 };
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-    
+
     User = Model(req.user.role);
     const { password, passwordCurrent } = req.body;
 
-    if(!password || !passwordCurrent) {
+    if (!password || !passwordCurrent) {
         return next(new AppError('Please provide New and Old passwords.', 400));
     }
 
@@ -213,3 +218,79 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     // 4) Log user in, send JWT
     createSendToken(user, 200, req, res);
 });
+
+exports.forgotPassword = Model =>
+    catchAsync(async (req, res, next) => {
+
+        if (!req.body.email) {
+            return next(new AppError('Please provide email address.', 400));
+        }
+
+        let users;
+        if (Model === Client) {
+            users = 'clients'
+        } else if (Model === Driver) {
+            users = 'drivers'
+        }
+
+        // 1) Get user based on POSTed email
+        const user = await Model.findOne({ email: req.body.email });
+        if (!user) {
+            return next(new AppError('There is no user with email address.', 404));
+        }
+
+        // 2) Generate the random reset token
+        const resetToken = user.createPasswordResetToken();
+        await user.save({ validateBeforeSave: false });
+
+        // 3) Send it to user's email
+        try {
+            const resetURL = `${req.protocol}://${req.get(
+                'host'
+            )}/api/v1/${users}/resetPassword/${resetToken}`;
+            await new Email(user, resetURL).sendPasswordReset();
+
+            res.status(200).json({
+                status: 'success',
+                message: 'Token sent to email!'
+            });
+        } catch (err) {
+            user.passwordResetToken = undefined;
+            user.passwordResetExpires = undefined;
+            await user.save({ validateBeforeSave: false });
+            console.log('err', err);
+
+            return next(
+                new AppError('There was an error sending the email. Try again later!'),
+                500
+            );
+        }
+    });
+
+exports.resetPassword = Model =>
+    catchAsync(async (req, res, next) => {
+        // 1) Get user based on the token
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(req.params.token)
+            .digest('hex');
+
+        const user = await Model.findOne({
+            passwordResetToken: hashedToken,
+            passwordResetExpires: { $gt: Date.now() }
+        });
+
+        // 2) If token has not expired, and there is user, set the new password
+        if (!user) {
+            return next(new AppError('Token is invalid or has expired', 400));
+        }
+        user.password = req.body.password;
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+
+        // 3) Update changedPasswordAt property for the user
+        // 4) Log the user in, send JWT
+        createSendToken(user, 200, req, res);
+    });
+

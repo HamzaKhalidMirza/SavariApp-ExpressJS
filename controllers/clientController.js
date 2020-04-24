@@ -112,6 +112,10 @@ exports.signup = authController.signup(Client);
 exports.verifyPhoneExistance = authController.verifyPhoneExistance(Client);
 exports.login = authController.login(Client);
 
+// Forgot Password Related Controllers
+exports.forgotPassword = authController.forgotPassword(Client);
+exports.resetPassword = authController.resetPassword(Client);
+
 // Administration Related Controllers
 exports.getAllUsers = factory.getAll(Client);
 exports.getUser = factory.getOne(Client);

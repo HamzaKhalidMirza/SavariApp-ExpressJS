@@ -110,6 +110,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 exports.verifyPhoneExistance = authController.verifyPhoneExistance(Driver);
 exports.login = authController.login(Driver);
 
+// Forgot Password Related Controllers
+exports.forgotPassword = authController.forgotPassword(Driver);
+exports.resetPassword = authController.resetPassword(Driver);
+
 // Administration Related Controllers
 exports.getUser = factory.getOne(Driver);
 exports.getAllUsers = factory.getAll(Driver);
