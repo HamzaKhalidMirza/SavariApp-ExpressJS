@@ -13,6 +13,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const clientRouter = require('./routes/clientRoutes');
 const driverRouter = require('./routes/driverRoutes');
+const adminRouter = require('./routes/adminRoutes');
 const tripRouter = require('./routes/tripRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const vehicleRouter = require('./routes/vehicleRoutes');
@@ -64,6 +65,7 @@ if (process.env.NODE_ENV === 'development') {
 */
 app.use('/api/v1/clients', clientRouter);
 app.use('/api/v1/drivers', driverRouter);
+app.use('/api/v1/admins', adminRouter);
 app.use('/api/v1/trips', tripRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/payments', paymentRouter);

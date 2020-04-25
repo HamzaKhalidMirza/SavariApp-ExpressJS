@@ -1,6 +1,6 @@
 const path = require('path');
 const User = require('../models/userModel');
-const Driver = require('../models/driverModel');
+const Admin = require('../models/adminModel');
 const authController = require('./authController')
 const factory = require('./handlerFactory');
 const AppError = require('./../utils/appError');
@@ -29,13 +29,13 @@ exports.uploadUserPhoto = upload.single('photoAvatar');
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    req.file.filename = `driver${req.user.id}-${Date.now()}.jpeg`;
+    req.file.filename = `admin${req.user.id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(500, 500)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
-        .toFile(`public/img/drivers/${req.file.filename}`);
+        .toFile(`public/img/admins/${req.file.filename}`);
 
     next();
 });
@@ -58,7 +58,7 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.deactivateMe = catchAsync(async (req, res, next) => {
-    await Driver.findByIdAndUpdate(req.user.id, { isActive: false });
+    await Admin.findByIdAndUpdate(req.user.id, { isActive: false });
 
     res.status(200).json({
         status: 'success',
@@ -76,7 +76,7 @@ const filterObj = (obj, ...allowedFields) => {
 
 exports.filterData = catchAsync(async (req, res, next) => {
     const filteredBody = filterObj(req.body, 'username', 'lName', 'fName', 'email', 'gender',
-        'dob', 'age', 'address', 'postalCode');
+        'dob', 'age');
 
     req.body = filteredBody;
 
@@ -86,7 +86,7 @@ exports.filterData = catchAsync(async (req, res, next) => {
 exports.setPhotoData = catchAsync(async (req, res, next) => {
 
     if (req.file) {
-        req.body.photoAvatar = `${process.env.HOST}/img/drivers/${req.file.filename}`;
+        req.body.photoAvatar = `${process.env.HOST}/img/admins/${req.file.filename}`;
         req.body.orignalPhoto = req.file.originalname.split('.')[0];
         req.body.photoAvatarExt = path.extname(req.file.originalname);
     }
@@ -99,7 +99,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     // 2) Filtered out unwanted fields names that are not allowed to be updated
 
     // 3) Update user document
-    const updatedUser = await Driver.findByIdAndUpdate(req.user.id, req.body, {
+    const updatedUser = await Admin.findByIdAndUpdate(req.user.id, req.body, {
         new: true,
         runValidators: true
     });
@@ -113,17 +113,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 // Login Related Controllers
-exports.verifyPhoneExistance = authController.verifyPhoneExistance(Driver);
-exports.login = authController.userLogin(Driver);
+exports.login = authController.adminLogin(Admin);
 
 // Forgot Password Related Controllers
-exports.forgotPassword = authController.forgotPassword(Driver);
-exports.resetPassword = authController.resetPassword(Driver);
+exports.forgotPassword = authController.forgotPassword(Admin);
+exports.resetPassword = authController.resetPassword(Admin);
 
 // Administration Related Controllers
-exports.getUser = factory.getOne(Driver, { path: 'vehicle' });
-exports.getAllUsers = factory.getAll(Driver);
-exports.createUser = factory.createOne(Driver);
+exports.getUser = factory.getOne(Admin);
+exports.getAllUsers = factory.getAll(Admin);
+exports.createUser = factory.createOne(Admin);
 // Do NOT update passwords with this!
-exports.updateUser = factory.updateOne(Driver);
-exports.deleteUser = factory.deleteOne(Driver);
+exports.updateUser = factory.updateOne(Admin);
+exports.deleteUser = factory.deleteOne(Admin);

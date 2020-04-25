@@ -14,7 +14,7 @@ router.get(
 );
 
 // Administration Related Routes
-// router.use(authController.restrictTo('admin'));
+router.use(authController.restrictTo('lead-admin','assistant-admin'));
 
 router
     .route('/')

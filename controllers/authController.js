@@ -1,5 +1,6 @@
 const Client = require('./../models/clientModel');
 const Driver = require('./../models/driverModel');
+const Admin = require('./../models/adminModel');
 const Mobile = require('./../models/mobileModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
@@ -114,7 +115,7 @@ exports.signup = Model =>
         createSendToken(newUser, 201, req, res);
     });
 
-exports.login = Model =>
+exports.userLogin = Model =>
     catchAsync(async (req, res, next) => {
         const { phone, password } = req.body;
 
@@ -133,11 +134,32 @@ exports.login = Model =>
         createSendToken(user, 200, req, res);
     });
 
+exports.adminLogin = Model =>
+    catchAsync(async (req, res, next) => {
+        const { email, password } = req.body;
+
+        // 1) Check if email and password exist
+        if (!email || !password) {
+            return next(new AppError('Please provide email and password!', 400));
+        }
+        // 2) Check if user exists && password is correct
+        const user = await Model.findOne({ email }).select('+password');
+
+        if (!user || !(await user.correctPassword(password, user.password))) {
+            return next(new AppError('Incorrect phone or password', 401));
+        }
+
+        // 3) If everything ok, send token to client
+        createSendToken(user, 200, req, res);
+    });
+
 const Model = (role) => {
     if (role === 'client') {
         return Client;
     } else if (role === 'driver') {
         return Driver;
+    } else if (role === 'lead-admin' || role === 'assistant-admin') {
+        return Admin;
     }
 }
 
@@ -233,7 +255,14 @@ exports.forgotPassword = Model =>
             return next(new AppError('Please provide email address.', 400));
         }
 
-        const users = Model === Client ? 'clients' : 'drivers';
+        let users = {};
+        if (Model === Client) {
+            users = 'clients';
+        } else if (Model === Driver) {
+            users = 'drivers';
+        } else if (Model === Admin) {
+            users = 'admins';
+        }
 
         // 1) Get user based on POSTed email
         const user = await Model.findOne({ email: req.body.email });

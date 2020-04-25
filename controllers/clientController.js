@@ -122,7 +122,7 @@ exports.signup = authController.signup(Client);
 
 // Login Related Controllers
 exports.verifyPhoneExistance = authController.verifyPhoneExistance(Client);
-exports.login = authController.login(Client);
+exports.login = authController.userLogin(Client);
 
 // Forgot Password Related Controllers
 exports.forgotPassword = authController.forgotPassword(Client);
