@@ -14,20 +14,28 @@ router.get(
 );
 
 // Administration Related Routes
-// router.use(authController.restrictTo('admin'));
+router.use(authController.restrictTo('admin'));
 
 router
     .route('/')
     .get(vehicleController.getAllVehicles)
     .post(
         vehicleController.setDriverId,
+        vehicleController.uploadUserPhoto,
+        vehicleController.resizeUserPhoto,
+        vehicleController.addVehicleFileCheck,
         vehicleController.createVehicle
     );
 
 router
     .route('/:id')
     .get(vehicleController.getVehicle)
-    .patch(vehicleController.updateVehicle)
+    .patch(
+        vehicleController.uploadUserPhoto,
+        vehicleController.resizeUserPhoto,
+        vehicleController.updateVehicleFileCheck,
+        vehicleController.updateVehicle
+    )
     .delete(vehicleController.deleteVehicle);
 
 module.exports = router;

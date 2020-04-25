@@ -1,11 +1,11 @@
 const path = require('path');
 const User = require('../models/userModel');
-const readFilePro = require('./../utils/readFilePro');
 const Driver = require('../models/driverModel');
 const authController = require('./authController')
 const factory = require('./handlerFactory');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
+const readFilePro = require('./../utils/readFilePro');
 const multer = require('multer');
 const sharp = require('sharp');
 

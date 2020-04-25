@@ -28,19 +28,19 @@ const vehicleSchema = new mongoose.Schema(
             type: Number,
             require: [true, "Please provide vehicle milage"]
         },
-        photoAvatar: {
+        vehicleAvatar: {
             type: String,
-            require: [true, "Please provide vehicle Photo"],
-            default: 'default.jpg'
+            default: 'defaultVehicle.jpg',
+            require: [true, "Please provide vehicle image"]
         },
-        picAvatarExt: String,
+        orignalPhoto: String,
+        // photoAvatarExt: String,
+        vehicleAvatarFile: String,
         description: {
             type: String,
             trim: true,
             maxlength: [40, 'Description must be less or equal then 40 characters.'],
-            minlength: [10, 'Description must be more or equal then 10 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid description. 
-        Must be characters or number!`]
+            minlength: [10, 'Description must be more or equal then 10 characters.']
         },
         type: {
             type: String,
