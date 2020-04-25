@@ -65,7 +65,7 @@ const clientSchema = new mongoose.Schema(
             default: 'default.jpg'
         },
         orignalPhoto: String,
-        // photoAvatarExt: String,
+        photoAvatarExt: String,
         photoAvatarFile: String,
         passwordChangedAt: Date,
         passwordResetToken: String,

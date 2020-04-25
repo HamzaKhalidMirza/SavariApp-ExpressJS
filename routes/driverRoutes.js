@@ -45,6 +45,8 @@ router.patch(
     driverController.generatePasswordError,
     driverController.uploadUserPhoto,
     driverController.resizeUserPhoto,
+    driverController.filterData,
+    driverController.setPhotoData,
     driverController.updateMe
 );
 
@@ -57,13 +59,22 @@ router.use('/:driverId/vehicles', vehicleRouter);
 router
     .route('/')
     .get(driverController.getAllUsers)
-    .post(driverController.createUser);
+    .post(
+        driverController.uploadUserPhoto,
+        driverController.resizeUserPhoto,
+        driverController.setPhotoData,
+        driverController.createUser
+    );
 
 router
     .route('/:id')
     .get(driverController.getUser)
     .patch(
         driverController.generatePasswordError,
+        driverController.uploadUserPhoto,
+        driverController.resizeUserPhoto,
+        driverController.filterData,
+        driverController.setPhotoData,
         driverController.updateUser
     )
     .delete(driverController.deleteUser);

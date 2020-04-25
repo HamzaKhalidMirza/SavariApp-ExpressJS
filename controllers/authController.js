@@ -105,6 +105,9 @@ exports.signup = Model =>
             password: req.body.password
         });
 
+        newUser.photoAvatar = `${process.env.HOST}/img/clients/default.jpg`;
+        newUser.save();
+
         const url = `${req.protocol}://${req.get('host')}/me`;
         await new Email(newUser, url).sendWelcome();
 
@@ -158,7 +161,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     // 2) token Verification
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const userRole = decoded.role;
-    console.log(userRole);
     User = Model(userRole);
 
     //   3) Check if user still exists

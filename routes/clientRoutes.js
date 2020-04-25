@@ -51,6 +51,8 @@ router.patch(
     clientController.generatePasswordError,
     clientController.uploadUserPhoto,
     clientController.resizeUserPhoto,
+    clientController.filterData,
+    clientController.setPhotoData,
     clientController.updateMe
 );
 
@@ -67,6 +69,10 @@ router
     .get(clientController.getUser)
     .patch(
         clientController.generatePasswordError,
+        clientController.uploadUserPhoto,
+        clientController.resizeUserPhoto,
+        clientController.filterData,
+        clientController.setPhotoData,
         clientController.updateUser
     )
     .delete(clientController.deleteUser);

@@ -14,16 +14,16 @@ router.get(
 );
 
 // Administration Related Routes
-router.use(authController.restrictTo('admin'));
+// router.use(authController.restrictTo('admin'));
 
 router
     .route('/')
     .get(vehicleController.getAllVehicles)
     .post(
-        vehicleController.setDriverId,
+        // vehicleController.setDriverId,
         vehicleController.uploadUserPhoto,
         vehicleController.resizeUserPhoto,
-        vehicleController.addVehicleFileCheck,
+        vehicleController.setPhotoData,
         vehicleController.createVehicle
     );
 
@@ -33,7 +33,8 @@ router
     .patch(
         vehicleController.uploadUserPhoto,
         vehicleController.resizeUserPhoto,
-        vehicleController.updateVehicleFileCheck,
+        vehicleController.filterData,
+        vehicleController.setPhotoData,
         vehicleController.updateVehicle
     )
     .delete(vehicleController.deleteVehicle);

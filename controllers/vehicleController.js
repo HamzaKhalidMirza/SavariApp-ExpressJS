@@ -1,3 +1,4 @@
+const path = require('path');
 const Vehicle = require('../models/vehicleModel');
 const factory = require('./handlerFactory');
 const AppError = require('./../utils/appError');
@@ -26,7 +27,8 @@ exports.uploadUserPhoto = upload.single('vehicleAvatar');
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    req.file.filename = `vehicle-${req.file.originalname}-${Date.now()}.jpeg`;
+    req.file.filename = `vehicle-${req.file.originalname.split('.')[0]}-${Date.now()}.jpeg`;
+    console.log(req.file.filename);
     await sharp(req.file.buffer)
         .resize(500, 500)
         .toFormat('jpeg')
@@ -73,35 +75,21 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 };
 
-exports.updateVehicleFileCheck = catchAsync(async (req, res, next) => {
-    // 1) Create error if user POSTs password data
-    // Already Check using GeneratePasswordError
-
-    // 2) Filtered out unwanted fields names that are not allowed to be updated
+exports.filterData = catchAsync(async (req, res, next) => {
     const filteredBody = filterObj(req.body, 'milage', 'description');
-    if (req.file) {
-        const fileData = await readFilePro(`public/img/vehicles/${req.file.filename}`);
-        filteredBody.vehicleAvatarFile = fileData;
-        filteredBody.vehicleAvatar = req.file.filename;
-        filteredBody.orignalPhoto = req.file.originalname.split('.')[0];
-        // filteredBody.photoAvatarExt = path.extname(req.file.originalname);
-    }
+
     req.body = filteredBody;
+
     next();
 });
 
-exports.addVehicleFileCheck = catchAsync(async (req, res, next) => {
+exports.setPhotoData = catchAsync(async (req, res, next) => {
 
-    const filteredBody = req.body;
     if (req.file) {
-        const fileData = await readFilePro(`public/img/vehicles/${req.file.filename}`);
-        filteredBody.vehicleAvatarFile = fileData;
-        filteredBody.vehicleAvatar = req.file.filename;
-        filteredBody.orignalPhoto = req.file.originalname.split('.')[0];
-        // filteredBody.photoAvatarExt = path.extname(req.file.originalname);
+        req.body.vehicleAvatar = `${process.env.HOST}/img/vehicles/${req.file.filename}`;
+        req.body.orignalVehicle = req.file.originalname.split('.')[0];
+        req.body.vehicleAvatarExt = path.extname(req.file.originalname);
     }
-    req.body = filteredBody;
-
     next();
 });
 

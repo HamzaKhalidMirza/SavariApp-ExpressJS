@@ -12,7 +12,6 @@ const sharp = require('sharp');
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-    console.log(1, 'Hi');
     if (file.mimetype.startsWith('image')) {
         cb(null, true);
     } else {
@@ -28,10 +27,9 @@ const upload = multer({
 exports.uploadUserPhoto = upload.single('photoAvatar');
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
-    console.log(2, 'Hi');
     if (!req.file) return next();
 
-    req.file.filename = `driver-${req.user.id}-${Date.now()}.jpeg`;
+    req.file.filename = `driver${req.user.id}-${Date.now()}.jpeg`;
 
     await sharp(req.file.buffer)
         .resize(500, 500)
@@ -76,24 +74,33 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 };
 
-exports.updateMe = catchAsync(async (req, res, next) => {
-    console.log(3, 'Hi');
-    // 1) Create error if user POSTs password data
-    // Already Check using GeneratePasswordError
-
-    // 2) Filtered out unwanted fields names that are not allowed to be updated
+exports.filterData = catchAsync(async (req, res, next) => {
     const filteredBody = filterObj(req.body, 'username', 'lName', 'fName', 'email', 'gender',
         'dob', 'age', 'address', 'postalCode');
+
+    req.body = filteredBody;
+
+    next();
+});
+
+exports.setPhotoData = catchAsync(async (req, res, next) => {
+
     if (req.file) {
-        const fileData = await readFilePro(`public/img/drivers/${req.file.filename}`);
-        filteredBody.photoAvatarFile = fileData;
-        filteredBody.photoAvatar = req.file.filename;
-        filteredBody.orignalPhoto = req.file.originalname.split('.')[0];
-        // filteredBody.photoAvatarExt = path.extname(req.file.originalname);
+        req.body.photoAvatar = `${process.env.HOST}/img/drivers/${req.file.filename}`;
+        req.body.orignalPhoto = req.file.originalname.split('.')[0];
+        req.body.photoAvatarExt = path.extname(req.file.originalname);
     }
+    next();
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+    // 1) Create error if user POSTs password data
+    console.log('3', 'Hello');
+
+    // 2) Filtered out unwanted fields names that are not allowed to be updated
 
     // 3) Update user document
-    const updatedUser = await Driver.findByIdAndUpdate(req.user.id, filteredBody, {
+    const updatedUser = await Driver.findByIdAndUpdate(req.user.id, req.body, {
         new: true,
         runValidators: true
     });

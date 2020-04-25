@@ -5,37 +5,35 @@ const vehicleSchema = new mongoose.Schema(
     {
         modelName: {
             type: String,
-            require: [true, "Please provide vehicle model name"]
+            required: [true, "Please provide vehicle model name"]
         },
         modelCode: {
             type: String,
-            require: [true, "Please provide vehicle model code"]
+            required: [true, "Please provide vehicle model code"]
         },
         make: {
             type: String,
-            require: [true, "Please provide vehicle make"]
+            required: [true, "Please provide vehicle make"]
         },
         registrationNo: {
             type: String,
             unique: true,
-            require: [true, "Please provide vehicle registration no"]
+            required: [true, "Please provide vehicle registration no"]
         },
         color: {
             type: String,
-            require: [true, "Please provide vehicle color"]
+            required: [true, "Please provide vehicle color"]
         },
         milage: {
             type: Number,
-            require: [true, "Please provide vehicle milage"]
+            required: [true, "Please provide vehicle milage"]
         },
         vehicleAvatar: {
             type: String,
-            default: 'defaultVehicle.jpg',
-            require: [true, "Please provide vehicle image"]
+            required: [true, 'Please provide vehicle photo']
         },
-        orignalPhoto: String,
-        // photoAvatarExt: String,
-        vehicleAvatarFile: String,
+        orignalVehicle: String,
+        vehicleAvatarExt: String,
         description: {
             type: String,
             trim: true,
@@ -48,7 +46,7 @@ const vehicleSchema = new mongoose.Schema(
                 values: ['mini', 'moto', 'bike'],
                 message: 'Type is either: mini, moto or bike'
             },
-            require: [true, "Please provide vehicle type"]
+            required: [true, "Please provide vehicle type"]
         },
         createdAt: {
             type: Date,
