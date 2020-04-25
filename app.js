@@ -66,7 +66,7 @@ app.use('/api/v1/clients', clientRouter);
 app.use('/api/v1/drivers', driverRouter);
 app.use('/api/v1/trips', tripRouter);
 app.use('/api/v1/bookings', bookingRouter);
-app.use('/api/v1/payments', paymentRouter);
+// app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/vehicles', vehicleRouter);
 app.use('/api/v1/reviews', reviewRouter);
 
