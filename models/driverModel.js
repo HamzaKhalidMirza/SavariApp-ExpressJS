@@ -125,10 +125,29 @@ const driverSchema = new mongoose.Schema(
     }
 );
 
+// Virtual Populate Vehicle
 driverSchema.virtual('vehicle', {
     ref: 'Vehicle',
     foreignField: 'driver',
     localField: '_id'
+});
+
+driverSchema.post(/^find/, function (doc, next) {
+
+    if(Array.isArray(doc)) {
+        console.log('Array');
+        doc.forEach(driver => {
+            if(driver.vehicle) {
+                driver.vehicle.forEach(vehicle => vehicle.driver = undefined);
+            }
+        });
+    } else {
+        console.log('Object');
+        if(doc.vehicle) {
+            doc.vehicle.forEach(vehicle => vehicle.driver = undefined);
+        }
+    }
+    next();
 });
 
 driverSchema.pre('save', async function (next) {
