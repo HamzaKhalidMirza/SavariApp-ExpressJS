@@ -135,14 +135,12 @@ driverSchema.virtual('vehicle', {
 driverSchema.post(/^find/, function (doc, next) {
 
     if(Array.isArray(doc)) {
-        console.log('Array');
         doc.forEach(driver => {
             if(driver.vehicle) {
                 driver.vehicle.forEach(vehicle => vehicle.driver = undefined);
             }
         });
     } else {
-        console.log('Object');
         if(doc.vehicle) {
             doc.vehicle.forEach(vehicle => vehicle.driver = undefined);
         }
