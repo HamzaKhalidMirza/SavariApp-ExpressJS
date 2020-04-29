@@ -5,29 +5,32 @@ const tripSchema = new mongoose.Schema(
     {
         seatsAvailable: {
             type: Number,
-            require: [true, 'Please provide number of available seats.'],
+            required: [true, 'Please provide number of available seats.'],
             min: [1, 'Available Seats must be at least 1.']
+        },
+        totalSeats: {
+            type: Number,
+            required: [true, 'Please provide total number of seats.'],
+            min: [1, 'Total Seats must be at least 1.']
         },
         description: {
             type: String,
             trim: true,
             maxlength: [100, 'Description must be less or equal then 100 characters.'],
-            minlength: [10, 'Description must be more or equal then 10 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid description. 
-        Must be characters or number!`]
+            minlength: [10, 'Description must be more or equal then 10 characters.']
         },
         startDate: {
             type: Date,
-            require: [true, 'Please provide start date.']
+            required: [true, 'Please provide start date.']
         },
         startTime: {
             type: Date,
-            require: [true, 'Please provide start time.']
+            required: [true, 'Please provide start time.']
         },
         estimatedTime: Date,
         status: {
             type: String,
-            require: [true, "Please provide vehicle type"],
+            default: 'upcoming',
             enum: {
                 values: ['upcoming', 'current', 'complete', 'cancelled'],
                 message: 'Status is either: upcoming, current, complete or cancelled'
@@ -37,9 +40,7 @@ const tripSchema = new mongoose.Schema(
             type: String,
             trim: true,
             maxlength: [100, 'Reason must be less or equal then 100 characters.'],
-            minlength: [10, 'Reason must be more or equal then 10 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid Reason. 
-        Must be characters or number!`]
+            minlength: [10, 'Reason must be more or equal then 10 characters.']
         },
         ratingsAverage: {
             type: Number,
@@ -94,6 +95,9 @@ const tripSchema = new mongoose.Schema(
         toObject: { virtuals: true }
     }
 );
+
+tripSchema.index({ startLocation: '2dsphere' });
+tripSchema.index({ endLocation: '2dsphere' });
 
 const Trip = mongoose.model('Trip', tripSchema);
 

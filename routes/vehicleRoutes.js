@@ -20,7 +20,7 @@ router
     .route('/')
     .get(vehicleController.getAllVehicles)
     .post(
-        // vehicleController.setDriverId,
+        vehicleController.setDriverId,
         vehicleController.uploadUserPhoto,
         vehicleController.resizeUserPhoto,
         vehicleController.setPhotoData,

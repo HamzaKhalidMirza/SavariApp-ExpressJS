@@ -2,6 +2,7 @@ const express = require('express');
 const driverController = require('./../controllers/driverController');
 const authController = require('./../controllers/authController');
 const vehicleRouter = require('./../routes/vehicleRoutes');
+const tripRouter = require('./../routes/tripRoutes');
 
 const router = express.Router();
 
@@ -52,6 +53,8 @@ router.patch(
 
 // Vehicle related routes for a specific Driver
 router.use('/:driverId/vehicles', vehicleRouter);
+// Trip related routes for a specific Driver
+router.use('/:driverId/trips', tripRouter);
 
 // Administration Related Routes
 router.use(authController.restrictTo('lead-admin','assistant-admin'));
