@@ -1,6 +1,7 @@
 const express = require('express');
 const tripController = require('../controllers/tripController');
 const authController = require('../controllers/authController');
+const bookingRouter = require('./../routes/bookingRoutes');
 
 const router = express.Router({ mergeParams: true });
 
@@ -62,7 +63,6 @@ router.get(
     tripController.getTripsWithin
 );
 
-
 router.patch(
     '/cancelTrip/:id',
     authController.restrictTo('driver'),
@@ -71,6 +71,8 @@ router.patch(
     tripController.updateTrip
 );
 
+// Trip related routes for a specific Driver
+router.use('/:tripId/bookings', bookingRouter);
 
 router
     .route('/')
@@ -80,6 +82,7 @@ router
     )
     .post(
         authController.restrictTo('driver'),
+        tripController.setDriverId,
         tripController.createTrip
     );
 

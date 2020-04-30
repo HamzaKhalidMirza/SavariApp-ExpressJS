@@ -16,6 +16,12 @@ exports.filterData = catchAsync(async (req, res, next) => {
     next();
 });
 
+exports.setDriverId = async (req, res, next) => {
+  // Allow nested routes
+  if (!req.body.driver) req.body.driver = req.params.driverId;
+  next();
+};
+
 exports.getMe = (req, res, next) => {
     req.params.driverId = req.user.id;
     next();
@@ -23,7 +29,6 @@ exports.getMe = (req, res, next) => {
 
 exports.cancelTrip = catchAsync(async (req, res, next) => {
     req.body.status = "cancelled";
-    req.body.cancellationReason = "Mood changed apprently!";
     next();
 });
 

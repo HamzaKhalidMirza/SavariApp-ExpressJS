@@ -70,6 +70,8 @@ exports.getAll = (Model, popOptions) =>
     // To allow for nested GET reviews on tour (hack)
     let filter = {};
     if (req.params.driverId) filter = { driver: req.params.driverId };
+    if (req.params.clientId) filter = { client: req.params.clientId };
+    if (req.params.tripId) filter = { trip: req.params.tripId };
 
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()

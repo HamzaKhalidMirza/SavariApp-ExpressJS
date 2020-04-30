@@ -5,20 +5,18 @@ const bookingSchema = new mongoose.Schema(
     {
         seatsReserved: {
             type: Number,
-            require: [true, 'Please provide number of available seats.'],
+            required: [true, 'Please provide number of reserved seats.'],
             min: [1, 'Available Seats must be at least 1.']
         },
         description: {
             type: String,
             trim: true,
             maxlength: [100, 'Description must be less or equal then 100 characters.'],
-            minlength: [10, 'Description must be more or equal then 10 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid description. 
-        Must be characters or number!`]
+            minlength: [10, 'Description must be more or equal then 10 characters.']
         },
         status: {
             type: String,
-            require: [true, "Please provide vehicle type"],
+            default: 'upcoming',
             enum: {
                 values: ['upcoming', 'current', 'complete', 'cancelled'],
                 message: 'Status is either: upcoming, current, complete or cancelled'
@@ -35,9 +33,7 @@ const bookingSchema = new mongoose.Schema(
             type: String,
             trim: true,
             maxlength: [100, 'Reason must be less or equal then 100 characters.'],
-            minlength: [10, 'Reason must be more or equal then 10 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid Reason. 
-        Must be characters or number!`]
+            minlength: [10, 'Reason must be more or equal then 10 characters.']
         },
         appStartTime: Date,
         appEndTime: Date,

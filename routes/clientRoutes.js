@@ -1,6 +1,7 @@
 const express = require('express');
 const clientController = require('../controllers/clientController');
 const authController = require('../controllers/authController');
+const bookingRouter = require('./../routes/bookingRoutes');
 
 const router = express.Router();
 
@@ -55,6 +56,9 @@ router.patch(
     clientController.setPhotoData,
     clientController.updateMe
 );
+
+// Trip related routes for a specific Driver
+router.use('/:clientId/bookings', bookingRouter);
 
 // Administration Related Routes
 router.use(authController.restrictTo('lead-admin','assistant-admin'));
