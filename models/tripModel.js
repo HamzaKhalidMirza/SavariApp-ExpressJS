@@ -99,6 +99,18 @@ const tripSchema = new mongoose.Schema(
 tripSchema.index({ startLocation: '2dsphere' });
 tripSchema.index({ endLocation: '2dsphere' });
 
+// Virtual Populate Vehicle
+tripSchema.virtual('booking', {
+    ref: 'Booking',
+    foreignField: 'trip',
+    localField: '_id'
+});
+tripSchema.virtual('review', {
+    ref: 'Review',
+    foreignField: 'trip',
+    localField: '_id'
+});
+
 tripSchema.pre(/^find/, function (next) {
     this.populate({
         path: 'driver',

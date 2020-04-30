@@ -111,6 +111,18 @@ const clientSchema = new mongoose.Schema(
     }
 );
 
+// Virtual Populate Vehicle
+clientSchema.virtual('booking', {
+    ref: 'Booking',
+    foreignField: 'client',
+    localField: '_id'
+});
+clientSchema.virtual('review', {
+    ref: 'Review',
+    foreignField: 'client',
+    localField: '_id'
+});
+
 clientSchema.pre('save', async function (next) {
     // Only run this function if password was actually modified
     if (!this.isModified('password')) return next();

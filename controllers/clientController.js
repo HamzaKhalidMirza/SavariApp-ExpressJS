@@ -129,8 +129,8 @@ exports.forgotPassword = authController.forgotPassword(Client);
 exports.resetPassword = authController.resetPassword(Client);
 
 // Administration Related Controllers
-exports.getAllUsers = factory.getAll(Client);
-exports.getUser = factory.getOne(Client);
+exports.getAllUsers = factory.getAll(Client, { path: 'booking review' });
+exports.getUser = factory.getOne(Client, { path: 'booking review' });
 // Do NOT update passwords with this!
 exports.updateUser = factory.updateOne(Client);
 exports.deleteUser = factory.deleteOne(Client);

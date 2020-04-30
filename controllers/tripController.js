@@ -86,8 +86,8 @@ exports.getTripsWithin = catchAsync(async (req, res, next) => {
     });  
 });
 
-exports.getTrip = factory.getOne(Trip);
-exports.getAllTrips = factory.getAll(Trip);
+exports.getTrip = factory.getOne(Trip, { path: 'booking review' });
+exports.getAllTrips = factory.getAll(Trip, { path: 'booking review' });
 exports.createTrip = factory.createOne(Trip);
 
 // Do NOT update passwords with this!

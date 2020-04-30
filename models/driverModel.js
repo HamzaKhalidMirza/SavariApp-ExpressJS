@@ -131,6 +131,16 @@ driverSchema.virtual('vehicle', {
     foreignField: 'driver',
     localField: '_id'
 });
+driverSchema.virtual('trip', {
+    ref: 'Trip',
+    foreignField: 'driver',
+    localField: '_id'
+});
+driverSchema.virtual('review', {
+    ref: 'Review',
+    foreignField: 'driver',
+    localField: '_id'
+});
 
 driverSchema.post(/^find/, function (doc, next) {
 
