@@ -5,9 +5,9 @@ const paymentSchema = new mongoose.Schema(
     {
         method: {
             type: String,
-            require: [true, "Please provide payment method"],
+            required: [true, "Please provide payment method"],
             enum: {
-                values: ['Cash', 'Credit Card', 'Debit Card'],
+                values: ['cash', 'credit-card', 'debit-card'],
                 message: 'Payment Method is either: Cash, Credit or Debit Card'
             }
         },
@@ -21,7 +21,7 @@ const paymentSchema = new mongoose.Schema(
         },
         totalPaid: {
             type: Number,
-            require: [true, "Please provide total paid"],
+            required: [true, "Please provide total paid"],
         },
         createdAt: {
             type: Date,

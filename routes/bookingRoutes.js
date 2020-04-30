@@ -1,11 +1,15 @@
 const express = require('express');
 const bookingController = require('../controllers/bookingController');
 const authController = require('../controllers/authController');
+const paymentRouter = require('./../routes/paymentRoutes');
 
 const router = express.Router({ mergeParams: true });
 
 // Protect all routes after this middleware
 router.use(authController.protect);
+
+// Booking related routes for a specific Payment
+router.use('/:bookingId/payments', paymentRouter);
 
 router.get(
     '/getClientBookings',
