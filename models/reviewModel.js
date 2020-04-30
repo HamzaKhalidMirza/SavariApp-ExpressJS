@@ -49,6 +49,23 @@ const reviewSchema = new mongoose.Schema(
     }
 );
 
+reviewSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'client',
+        select: `-passwordChangedAt -passwordResetToken -passwordResetExpires
+        -isActive -createdAt -ratingsQuantity`
+    }).populate({
+        path: 'driver',
+        select: `-photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
+        -isActive -createdAt -ratingsAverage -ratingsQuantity`
+    }).populate({
+        path: 'trip',
+        select: `-estimatedTime -cancellationReason -ratingsAverage -ratingsQuantity
+        -createdAt`
+    });
+    next();
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;

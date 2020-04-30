@@ -88,6 +88,22 @@ const bookingSchema = new mongoose.Schema(
     }
 );
 
+bookingSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'client',
+        select: `-passwordChangedAt -passwordResetToken -passwordResetExpires
+        -isActive -createdAt -ratingsQuantity`
+    }).populate({
+        path: 'trip',
+        select: `-estimatedTime -cancellationReason -ratingsAverage -ratingsQuantity
+        -createdAt`
+    }).populate({
+        path: 'payment',
+        select: '-createdAt -isPaid'
+    });
+    next();
+});
+
 const Booking = mongoose.model('Booking', bookingSchema);
 
 module.exports = Booking;

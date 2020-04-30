@@ -99,6 +99,15 @@ const tripSchema = new mongoose.Schema(
 tripSchema.index({ startLocation: '2dsphere' });
 tripSchema.index({ endLocation: '2dsphere' });
 
+tripSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'driver',
+        select: `-photoAvatar -photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
+        -isActive -createdAt -ratingsAverage -ratingsQuantity`
+    });
+    next();
+});
+
 const Trip = mongoose.model('Trip', tripSchema);
 
 module.exports = Trip;
