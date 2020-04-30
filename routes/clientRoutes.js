@@ -2,6 +2,7 @@ const express = require('express');
 const clientController = require('../controllers/clientController');
 const authController = require('../controllers/authController');
 const bookingRouter = require('./../routes/bookingRoutes');
+const reviewRouter = require('./../routes/reviewRoutes');
 
 const router = express.Router();
 
@@ -22,6 +23,9 @@ router.patch('/resetPassword/:token', clientController.resetPassword);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
+
+// Review related routes for a specific Client
+router.use('/:clientId/reviews', reviewRouter);
 
 // Current User Related
 router.get(
@@ -61,7 +65,7 @@ router.patch(
 router.use('/:clientId/bookings', bookingRouter);
 
 // Administration Related Routes
-router.use(authController.restrictTo('lead-admin','assistant-admin'));
+router.use(authController.restrictTo('lead-admin', 'assistant-admin'));
 
 router
     .route('/')

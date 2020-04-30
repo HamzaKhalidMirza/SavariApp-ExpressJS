@@ -11,15 +11,16 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.filterData = catchAsync(async (req, res, next) => {
-    const filteredBody = filterObj(req.body, 'status', 'cancellationReason','cancellationEnd');
+    const filteredBody = filterObj(req.body, 'status', 'cancellationReason', 'cancellationEnd');
     req.body = filteredBody;
     next();
 });
 
-exports.setClientId = async (req, res, next) => {
-  // Allow nested routes
-  if (!req.body.client) req.body.client = req.params.clientId;
-  next();
+exports.setTripClientIds = async (req, res, next) => {
+    // Allow nested routes
+    if (!req.body.trip) req.body.trip = req.params.tripId;
+    if (!req.body.client) req.body.client = req.user.id;
+    next();
 };
 
 exports.getMe = (req, res, next) => {

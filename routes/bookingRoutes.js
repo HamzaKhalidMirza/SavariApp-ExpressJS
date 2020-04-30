@@ -28,7 +28,7 @@ router.get(
 
 router.patch(
     '/cancelBooking/:id',
-    authController.restrictTo('client','driver'),
+    authController.restrictTo('client', 'driver'),
     bookingController.cancelBooking,
     bookingController.filterData,
     bookingController.updateBooking
@@ -42,7 +42,7 @@ router
     )
     .post(
         authController.restrictTo('client'),
-        bookingController.setClientId,
+        bookingController.setTripClientIds,
         bookingController.createBooking
     );
 

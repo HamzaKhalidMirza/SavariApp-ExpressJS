@@ -2,6 +2,7 @@ const express = require('express');
 const tripController = require('../controllers/tripController');
 const authController = require('../controllers/authController');
 const bookingRouter = require('./../routes/bookingRoutes');
+const reviewRouter = require('./../routes/reviewRoutes');
 
 const router = express.Router({ mergeParams: true });
 
@@ -71,8 +72,10 @@ router.patch(
     tripController.updateTrip
 );
 
-// Trip related routes for a specific Driver
+// Booking related routes for a specific Trip
 router.use('/:tripId/bookings', bookingRouter);
+// Review related routes for a specific Trip
+router.use('/:tripId/reviews', reviewRouter);
 
 router
     .route('/')

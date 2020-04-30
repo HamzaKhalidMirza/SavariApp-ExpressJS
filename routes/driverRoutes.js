@@ -3,6 +3,7 @@ const driverController = require('./../controllers/driverController');
 const authController = require('./../controllers/authController');
 const vehicleRouter = require('./../routes/vehicleRoutes');
 const tripRouter = require('./../routes/tripRoutes');
+const reviewRouter = require('./../routes/reviewRoutes');
 
 const router = express.Router();
 
@@ -55,9 +56,11 @@ router.patch(
 router.use('/:driverId/vehicles', vehicleRouter);
 // Trip related routes for a specific Driver
 router.use('/:driverId/trips', tripRouter);
+// Review related routes for a specific Driver
+router.use('/:driverId/reviews', reviewRouter);
 
 // Administration Related Routes
-router.use(authController.restrictTo('lead-admin','assistant-admin'));
+router.use(authController.restrictTo('lead-admin', 'assistant-admin'));
 
 router
     .route('/')
