@@ -16,6 +16,7 @@ const twilio = require('twilio')(accountSid, authToken);
 exports.checkPhoneExistance = Model =>
     catchAsync(async (req, res, next) => {
         const { phone } = req.body;
+        console.log(req.body);
 
         if (!phone) {
             return next(new AppError('Please provide phone number!', 400));

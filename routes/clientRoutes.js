@@ -7,14 +7,14 @@ const reviewRouter = require('./../routes/reviewRoutes');
 const router = express.Router();
 
 // Signup Related Routes
-router.get('/checkPhoneExistance', clientController.checkPhoneExistance);
-router.get('/checkEmailExistance', clientController.checkEmailExistance);
+router.post('/checkPhoneExistance', clientController.checkPhoneExistance);
+router.post('/checkEmailExistance', clientController.checkEmailExistance);
 router.post('/getVerificationCode', clientController.getVerificationCode);
 router.patch('/verifyCode', clientController.verifyCode);
 router.post('/signup', clientController.signup);
 
 // Login Related Routes
-router.get('/verifyPhoneExistance', clientController.verifyPhoneExistance);
+router.post('/verifyPhoneExistance', clientController.verifyPhoneExistance);
 router.post('/login', clientController.login);
 
 // Frogot Password Related Routes
