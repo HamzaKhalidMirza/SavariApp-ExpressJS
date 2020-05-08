@@ -342,7 +342,7 @@ exports.getVerificationCode = catchAsync(async (req, res, next) => {
     if (!data) {
         return next(
             new AppError('There was an error sending the code. Try again later!'),
-            500
+            400
         );
     }
 
