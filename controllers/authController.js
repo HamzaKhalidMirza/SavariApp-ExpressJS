@@ -107,7 +107,7 @@ exports.signup = Model =>
             countryCode: req.body.countryCode
         });
 
-        newUser.photoAvatar = `${process.env.HOST}/img/clients/default.jpg`;
+        newUser.photoAvatar = `${process.env.HOST}/img/clients/default.png`;
         newUser.save();
 
         const url = `${req.protocol}://${req.get('host')}/me`;
