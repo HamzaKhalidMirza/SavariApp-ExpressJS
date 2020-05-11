@@ -86,14 +86,14 @@ const signToken = (id, role) => {
 };
 
 const createSendToken = (user, statusCode, req, res) => {
-    const token = signToken(user._id, user.role);
+    const token = signToken(user, user._id, user.role);
     user.password = undefined;
 
     res.status(statusCode).json({
         status: 'success',
         token: token,
         data: {
-            data: user
+            user
         }
     });
 }
@@ -103,7 +103,8 @@ exports.signup = Model =>
         const newUser = await Model.create({
             phone: req.body.phone,
             email: req.body.email,
-            password: req.body.password
+            password: req.body.password,
+            countryCode: req.body.countryCode
         });
 
         newUser.photoAvatar = `${process.env.HOST}/img/clients/default.jpg`;
