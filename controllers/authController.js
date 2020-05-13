@@ -120,8 +120,11 @@ exports.signup = Model =>
         newUser.photoAvatar = `${process.env.HOST}/img/clients/default.png`;
         newUser.save();
 
+        console.log('1', 'Hello');
+        console.log(';'+process.env.NODE_ENV+';');
         const url = `${req.protocol}://${req.get('host')}/me`;
         await new Email(newUser, url).sendWelcome();
+        console.log(':'+process.env.NODE_ENV+':');
 
         createSendToken(newUser, 201, req, res);
     });

@@ -11,6 +11,7 @@ module.exports = class Email {
   }
 
   newTransport() {
+    console.log('Hello');
     if (process.env.NODE_ENV === 'development') {
       console.log(','+process.env.NODE_ENV+',');
     } else {
@@ -62,6 +63,7 @@ module.exports = class Email {
   }
 
   async sendWelcome() {
+    console.log('Hi');
     await this.send('welcome', 'Welcome to the CabPool Ride Service!');
   }
 
