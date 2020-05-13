@@ -58,6 +58,9 @@ app.use((req, res, next) => {
 });
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
+  console.log('-'+process.env.NODE_ENV+'-');
+} else {
+  console.log('-'+process.env.NODE_ENV.trim()+'-');
 }
 
 /*

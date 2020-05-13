@@ -100,11 +100,21 @@ const createSendToken = (user, statusCode, req, res) => {
 
 exports.signup = Model =>
     catchAsync(async (req, res, next) => {
+        const { phone, email, password, countryCode } = req.body;
+        let username = email.slice(0, email.indexOf('@'));
+        username = username.slice(0, username.indexOf('.'));
+        username = username.toUpperCase();
+        fName = 'No First Name';
+        lName = 'No Last Name';
+
         const newUser = await Model.create({
-            phone: req.body.phone,
-            email: req.body.email,
-            password: req.body.password,
-            countryCode: req.body.countryCode
+            phone: phone,
+            email: email,
+            password: password,
+            countryCode: countryCode,
+            username: username,
+            fName: fName,
+            lName: lName
         });
 
         newUser.photoAvatar = `${process.env.HOST}/img/clients/default.png`;

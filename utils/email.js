@@ -11,7 +11,15 @@ module.exports = class Email {
   }
 
   newTransport() {
+    if (process.env.NODE_ENV === 'development') {
+      app.use(morgan('dev'));
+      console.log(','+process.env.NODE_ENV+',');
+    } else {
+      console.log(','+process.env.NODE_ENV.trim()+',');
+    }
+    
     if (process.env.NODE_ENV.trim() === 'production') {
+      console.log('.'+process.env.NODE_ENV.trim()+'.');
       // Sendgrid
       return nodemailer.createTransport({
         service: 'SendGrid',

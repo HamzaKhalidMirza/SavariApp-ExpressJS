@@ -17,18 +17,12 @@ const clientSchema = new mongoose.Schema(
         fName: {
             type: String,
             trim: true,
-            maxlength: [20, 'FName must be less or equal then 20 characters.'],
-            minlength: [8, 'FName must be more or equal then 8 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid FName. 
-            Must be characters or number!`]
+            maxlength: [20, 'FName must be less or equal then 20 characters.']
         },
         lName: {
             type: String,
             trim: true,
             maxlength: [20, 'LName must be less or equal then 20 characters.'],
-            minlength: [8, 'LName must be more or equal then 8 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid LName. 
-            Must be characters or number!`]
         },
         email: {
             type: String,
