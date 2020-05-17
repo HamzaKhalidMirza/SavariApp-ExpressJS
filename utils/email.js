@@ -1,35 +1,17 @@
 const nodemailer = require('nodemailer');
 const pug = require('pug');
 const htmlToText = require('html-to-text');
+const sendGrid = require('@sendgrid/mail');
 
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
     this.firstName = user.email.split('@')[0];
     this.url = url;
-    this.from = `CabPool Taxi <${process.env.EMAIL_FROM}>`;
+    this.from = process.env.EMAIL_FROM;
   }
 
   newTransport() {
-    console.log('Hello');
-    if (process.env.NODE_ENV === 'development') {
-      console.log(','+process.env.NODE_ENV+',');
-    } else {
-      console.log(','+process.env.NODE_ENV.trim()+',');
-    }
-    
-    if (process.env.NODE_ENV.trim() === 'production') {
-      console.log('.'+process.env.NODE_ENV.trim()+'.');
-      // Sendgrid
-      return nodemailer.createTransport({
-        service: 'SendGrid',
-        auth: {
-          user: process.env.SENDGRID_USERNAME,
-          pass: process.env.SENDGRID_PASSWORD
-        }
-      });
-    }
-
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
@@ -51,19 +33,24 @@ module.exports = class Email {
 
     // 2) Define email options
     const mailOptions = {
-      from: this.from,
       to: this.to,
+      from: this.from,
       subject,
-      html,
-      text: htmlToText.fromString(html)
+      text: htmlToText.fromString(html),
+      html
     };
 
     // 3) Create a transport and send email
-    await this.newTransport().sendMail(mailOptions);
+    if (process.env.NODE_ENV.trim() === 'production') {
+      sendGrid.setApiKey(process.env.SENDGRID_API_KEY);
+      await sendGrid.send(mailOptions);
+    } else {
+      await this.newTransport().sendMail(mailOptions);
+    }
+
   }
 
   async sendWelcome() {
-    console.log('Hi');
     await this.send('welcome', 'Welcome to the CabPool Ride Service!');
   }
 

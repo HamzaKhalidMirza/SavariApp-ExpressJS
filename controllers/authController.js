@@ -79,8 +79,8 @@ exports.verifyPhoneExistance = Model =>
         });
     });
 
-const signToken = (id, role) => {
-    return jwt.sign({ id, role }, process.env.JWT_SECRET, {
+const signToken = (user, id, role) => {
+    return jwt.sign({ user, id, role }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 };
@@ -120,13 +120,19 @@ exports.signup = Model =>
         newUser.photoAvatar = `${process.env.HOST}/img/clients/default.png`;
         newUser.save();
 
-        console.log('1', 'Hello');
-        console.log(';'+process.env.NODE_ENV+';');
-        const url = `${req.protocol}://${req.get('host')}/me`;
-        await new Email(newUser, url).sendWelcome();
-        console.log(':'+process.env.NODE_ENV+':');
+        try {
+            const url = `${req.protocol}://${req.get('host')}/me`;
+            await new Email(newUser, url).sendWelcome();
+    
+            createSendToken(newUser, 201, req, res);    
+        } catch(err) {
+            console.log('err', err);
 
-        createSendToken(newUser, 201, req, res);
+            return next(
+                new AppError('There was an error sending the email. Try again later!'),
+                500
+            );
+        }
     });
 
 exports.userLogin = Model =>
@@ -198,6 +204,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const userRole = decoded.role;
     User = Model(userRole);
+    // console.log(decoded);
+    // console.log(userRole);
 
     //   3) Check if user still exists
     const currentUser = await User.findById(decoded.id);
