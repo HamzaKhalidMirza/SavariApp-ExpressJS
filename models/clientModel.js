@@ -10,9 +10,7 @@ const clientSchema = new mongoose.Schema(
             type: String,
             trim: true,
             maxlength: [30, 'Username must be less or equal then 30 characters.'],
-            minlength: [8, 'Username must be more or equal then 8 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid username. 
-            Must be characters or number!`]
+            minlength: [3, 'Username must be more or equal then 8 characters.']
         },
         fName: {
             type: String,
