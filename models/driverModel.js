@@ -8,26 +8,18 @@ const driverSchema = new mongoose.Schema(
         username: {
             type: String,
             trim: true,
-            maxlength: [30, 'Username must be less or equal then 30 characters.'],
-            minlength: [8, 'Username must be more or equal then 8 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid username. 
-            Must be characters or number!`]
+            maxlength: [20, 'Username must be less or equal then 30 characters.'],
+            minlength: [3, 'Username must be more or equal then 8 characters.']
         },
         fName: {
             type: String,
             trim: true,
-            maxlength: [20, 'FName must be less or equal then 20 characters.'],
-            minlength: [8, 'FName must be more or equal then 8 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid FName. 
-            Must be characters or number!`]
+            maxlength: [20, 'FName must be less or equal then 20 characters.']
         },
         lName: {
             type: String,
             trim: true,
-            maxlength: [20, 'LName must be less or equal then 20 characters.'],
-            minlength: [8, 'LName must be more or equal then 8 characters.'],
-            validate: [validator.isAlphanumeric, `Please provide valid LName. 
-            Must be characters or number!`]
+            maxlength: [20, 'LName must be less or equal then 20 characters.']
         },
         email: {
             type: String,
