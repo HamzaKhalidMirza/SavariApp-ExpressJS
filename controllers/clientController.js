@@ -12,7 +12,6 @@ const sharp = require('sharp');
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-    console.log('multerFilter');
     if (file.mimetype.startsWith('image')) {
         cb(null, true);
     } else {
@@ -28,9 +27,8 @@ const upload = multer({
 exports.uploadUserPhoto = upload.single('photoAvatar');
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
-    console.log('resizeUserPhoto');
     console.log(req.body);
-    if (!req.file) return next();
+    if (!req.photoAvatar) return next();
     console.log('Hi');
 
     req.file.filename = `client-${req.user.id}-${Date.now()}.jpeg`;
@@ -45,7 +43,6 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 });
 
 exports.generatePasswordError = (req, res, next) => {
-    console.log('generatePasswordError');
     if (req.body.password) {
         return next(
             new AppError(
@@ -110,10 +107,6 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     } else if(req.body.lName) {
         req.body.username = req.body.lName;
     }
-
-    console.log(req.body.fName);
-    console.log(req.body.lName);
-    console.log(req.body.username);
 
     // 3) Update user document
     const updatedUser = await Client.findByIdAndUpdate(req.user.id, req.body, {
