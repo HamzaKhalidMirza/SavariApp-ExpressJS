@@ -8,7 +8,7 @@ const reviewRouter = require('./../routes/reviewRoutes');
 const router = express.Router();
 
 // Login Related Routes
-router.get('/verifyPhoneExistance', driverController.verifyPhoneExistance);
+router.post('/verifyPhoneExistance', driverController.verifyPhoneExistance);
 router.post('/login', driverController.login);
 
 // Frogot Password Related Routes

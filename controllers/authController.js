@@ -60,12 +60,14 @@ exports.checkEmailExistance = Model =>
 exports.verifyPhoneExistance = Model =>
     catchAsync(async (req, res, next) => {
         const { phone } = req.body;
+        console.log(phone);
 
         if (!phone) {
             return next(new AppError('Please provide phone number!', 400));
         }
 
         const user = await Model.findOne({ phone });
+        console.log(user);
 
         if (!user) {
             return next(new AppError('Phone Number not exits!', 401));
