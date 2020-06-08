@@ -95,8 +95,16 @@ exports.setPhotoData = catchAsync(async (req, res, next) => {
 
 exports.updateMe = catchAsync(async (req, res, next) => {
     // 1) Create error if user POSTs password data
-
     // 2) Filtered out unwanted fields names that are not allowed to be updated
+    if(req.body.fName) {
+        if(req.body.lName) {
+            req.body.username = req.body.fName + ' ' + req.body.lName;
+        } else {
+            req.body.username = req.body.fName;
+        }
+    } else if(req.body.lName) {
+        req.body.username = req.body.lName;
+    }
 
     // 3) Update user document
     const updatedUser = await Driver.findByIdAndUpdate(req.user.id, req.body, {
