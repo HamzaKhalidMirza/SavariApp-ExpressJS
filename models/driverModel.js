@@ -128,23 +128,43 @@ driverSchema.virtual('trip', {
     foreignField: 'driver',
     localField: '_id'
 });
-driverSchema.virtual('review', {
-    ref: 'Review',
-    foreignField: 'driver',
-    localField: '_id'
-});
+// driverSchema.virtual('review', {
+//     ref: 'Review',
+//     foreignField: 'driver',
+//     localField: '_id'
+// });
 
 driverSchema.post(/^find/, function (doc, next) {
 
     if(Array.isArray(doc)) {
         doc.forEach(driver => {
-            if(driver.vehicle) {
-                driver.vehicle.forEach(vehicle => vehicle.driver = undefined);
+            if(driver.trip) {
+                if(Array.isArray(driver.trip)) {
+                    driver.trip.forEach(trip => {
+                        trip.driver = undefined;
+                        trip.review = undefined;
+                        trip.booking = undefined;
+                    });    
+                } else {
+                    driver.trip.driver = undefined;
+                    driver.trip.review = undefined;
+                    driver.trip.booking = undefined;
+                }
             }
         });
     } else {
-        if(doc.vehicle) {
-            doc.vehicle.forEach(vehicle => vehicle.driver = undefined);
+        if(doc.trip) {
+            if(Array.isArray(doc.trip)) {
+                doc.trip.forEach(trip => {
+                    trip.driver = undefined;
+                    trip.review = undefined;
+                    trip.booking = undefined;
+                });    
+            } else {
+                doc.trip.driver = undefined;
+                doc.trip.review = undefined;
+                doc.trip.booking = undefined;
+            }
         }
     }
     next();

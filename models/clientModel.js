@@ -115,6 +115,103 @@ clientSchema.virtual('review', {
     localField: '_id'
 });
 
+clientSchema.post(/^find/, function (doc, next) {
+    if (Array.isArray(doc)) {
+      doc.forEach((client) => {
+        if (client.booking) {
+          if (Array.isArray(client.booking)) {
+            client.booking.forEach((booking) => {
+              booking.client = undefined;
+              if (booking.trip) {
+                if (Array.isArray(booking.trip)) {
+                  booking.trip.forEach((trip) => {
+                    trip.review = undefined;
+                    trip.booking = undefined;
+                  });
+                } else {
+                  booking.trip.review = undefined;
+                  booking.trip.booking = undefined;
+                }
+              }        
+            });
+          } else {
+            client.booking.client = undefined;
+            if (client.booking.trip) {
+                if (Array.isArray(client.booking.trip)) {
+                    client.booking.trip.forEach((trip) => {
+                    trip.review = undefined;
+                    trip.booking = undefined;
+                  });
+                } else {
+                    client.booking.trip.review = undefined;
+                    client.booking.trip.booking = undefined;
+                }
+              }          
+          }
+        }
+        if (client.review) {
+            if (Array.isArray(client.review)) {
+              client.review.forEach((review) => {
+                review.client = undefined;
+                review.driver = undefined;
+                review.trip = undefined;
+              });
+            } else {
+                client.review.client = undefined;
+                client.review.driver = undefined;
+                client.review.trip = undefined;
+            }
+          }
+          });
+    } else {
+      if (doc.booking) {
+        if (Array.isArray(doc.booking)) {
+            doc.booking.forEach((booking) => {
+              booking.client = undefined;
+              if (booking.trip) {
+                if (Array.isArray(booking.trip)) {
+                  booking.trip.forEach((trip) => {
+                    trip.review = undefined;
+                    trip.booking = undefined;
+                  });
+                } else {
+                  booking.trip.review = undefined;
+                  booking.trip.booking = undefined;
+                }
+              }        
+            });
+          } else {
+            doc.booking.client = undefined;
+            if (doc.booking.trip) {
+                if (Array.isArray(doc.booking.trip)) {
+                    doc.booking.trip.forEach((trip) => {
+                    trip.review = undefined;
+                    trip.booking = undefined;
+                  });
+                } else {
+                    doc.booking.trip.review = undefined;
+                    doc.booking.trip.booking = undefined;
+                }
+              }          
+          }
+      }
+      if (doc.review) {
+        if (Array.isArray(doc.review)) {
+          doc.review.forEach((review) => {
+            review.client = undefined;
+            review.driver = undefined;
+            review.trip = undefined;
+          });
+        } else {
+          doc.review.client = undefined;
+          doc.review.driver = undefined;
+          doc.review.trip = undefined;
+        }
+      }
+    }
+    next();
+  });
+  
 clientSchema.pre('save', async function (next) {
     // Only run this function if password was actually modified
     if (!this.isModified('password')) return next();

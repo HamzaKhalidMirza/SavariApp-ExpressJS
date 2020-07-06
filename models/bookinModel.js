@@ -1,109 +1,171 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
+const mongoose = require("mongoose");
+const validator = require("validator");
 
 const bookingSchema = new mongoose.Schema(
-    {
-        seatsReserved: {
-            type: Number,
-            required: [true, 'Please provide number of reserved seats.'],
-            min: [1, 'Available Seats must be at least 1.']
-        },
-        description: {
-            type: String,
-            trim: true,
-            maxlength: [100, 'Description must be less or equal then 100 characters.'],
-            minlength: [10, 'Description must be more or equal then 10 characters.']
-        },
-        status: {
-            type: String,
-            default: 'upcoming',
-            enum: {
-                values: ['upcoming', 'current', 'complete', 'cancelled'],
-                message: 'Status is either: upcoming, current, complete or cancelled'
-            }
-        },
-        cancellationEnd: {
-            type: String,
-            enum: {
-                values: ['client', 'driver'],
-                message: 'Cancellation End is either: driver or client'
-            }
-        },
-        cancellationReason: {
-            type: String,
-            trim: true,
-            maxlength: [100, 'Reason must be less or equal then 100 characters.'],
-            minlength: [10, 'Reason must be more or equal then 10 characters.']
-        },
-        appStartTime: Date,
-        appEndTime: Date,
-        appEstimatedTime: Date,
-        appDistance: String,
-        appFare: Number,
-        createdAt: {
-            type: Date,
-            default: Date.now(),
-            select: false
-        },
-        startLocation: {
-            type: {
-                type: String,
-                default: 'Point',
-                enum: ['Point']
-            },
-            coordinates: [Number],
-            address: String,
-            description: String,
-            staticImage: String
-        },
-        endLocation: {
-            type: {
-                type: String,
-                default: 'Point',
-                enum: ['Point']
-            },
-            coordinates: [Number],
-            address: String,
-            description: String,
-            staticImage: String
-        },
-        client: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Client',
-            required: [true, 'Booking must belong to a client.']
-        },
-        trip: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Trip',
-            required: [true, 'Booking must belong to a trip.']
-        },
-        payment: {
-            type: mongoose.Schema.ObjectId,
-            ref: 'Payment',
-        }
+  {
+    seatsReserved: {
+      type: Number,
+      required: [true, "Please provide number of reserved seats."],
+      min: [1, "Available Seats must be at least 1."],
     },
-    {
-        toJSON: { virtuals: true },
-        toObject: { virtuals: true }
-    }
+    description: {
+      type: String,
+      trim: true,
+      maxlength: [
+        100,
+        "Description must be less or equal then 100 characters.",
+      ],
+      minlength: [10, "Description must be more or equal then 10 characters."],
+    },
+    status: {
+      type: String,
+      default: "upcoming",
+      enum: {
+        values: ["upcoming", "current", "complete", "cancelled"],
+        message: "Status is either: upcoming, current, complete or cancelled",
+      },
+    },
+    cancellationEnd: {
+      type: String,
+      enum: {
+        values: ["client", "driver"],
+        message: "Cancellation End is either: driver or client",
+      },
+    },
+    cancellationReason: {
+      type: String,
+      trim: true,
+      maxlength: [100, "Reason must be less or equal then 100 characters."],
+      minlength: [10, "Reason must be more or equal then 10 characters."],
+    },
+    appStartTime: Date,
+    appEndTime: Date,
+    appEstimatedTime: Date,
+    appDistance: String,
+    appFare: Number,
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+      select: false,
+    },
+    startLocation: {
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      staticImage: String,
+    },
+    endLocation: {
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+      staticImage: String,
+    },
+    client: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Client",
+      required: [true, "Booking must belong to a client."],
+    },
+    trip: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Trip",
+      required: [true, "Booking must belong to a trip."],
+    },
+    payment: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Payment",
+    },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
 bookingSchema.pre(/^find/, function (next) {
-    this.populate({
-        path: 'client',
-        select: `-passwordChangedAt -passwordResetToken -passwordResetExpires
-        -isActive -createdAt -ratingsQuantity`
-    }).populate({
-        path: 'trip',
-        select: `-estimatedTime -cancellationReason -ratingsAverage -ratingsQuantity
-        -createdAt`
-    }).populate({
-        path: 'payment',
-        select: '-createdAt -isPaid'
+  this.populate({
+    path: "client",
+    select: `-passwordChangedAt -passwordResetToken -passwordResetExpires
+        -isActive -createdAt -ratingsQuantity`,
+  })
+    .populate({
+      path: "trip",
+      select: `-estimatedTime -cancellationReason -ratingsAverage -ratingsQuantity
+        -createdAt`,
+    })
+    .populate({
+      path: "payment",
+      select: "-createdAt -isPaid",
     });
-    next();
+  next();
 });
 
-const Booking = mongoose.model('Booking', bookingSchema);
+bookingSchema.post(/^find/, function (doc, next) {
+  if (Array.isArray(doc)) {
+    doc.forEach((booking) => {
+      if (booking.client) {
+        if (Array.isArray(booking.client)) {
+          booking.client.forEach((client) => {
+            client.booking = undefined;
+            client.review = undefined;
+          });
+        } else {
+          booking.client.booking = undefined;
+          booking.client.review = undefined;
+        }
+      }
+      if (booking.trip) {
+        if (Array.isArray(booking.trip)) {
+          booking.trip.forEach((trip) => {
+            trip.driver = undefined;
+            trip.review = undefined;
+            trip.booking = undefined;
+          });
+        } else {
+          booking.trip.driver = undefined;
+          booking.trip.review = undefined;
+          booking.trip.booking = undefined;
+        }
+      }
+    });
+  } else {
+    if (doc.client) {
+      if (Array.isArray(doc.client)) {
+        doc.client.forEach((client) => {
+          client.booking = undefined;
+          client.review = undefined;
+        });
+      } else {
+        doc.client.booking = undefined;
+        doc.client.review = undefined;
+      }
+    }
+    if (doc.trip) {
+      if (Array.isArray(doc.trip)) {
+        doc.trip.forEach((trip) => {
+          trip.driver = undefined;
+          trip.review = undefined;
+          trip.booking = undefined;
+        });
+      } else {
+        doc.trip.driver = undefined;
+        doc.trip.review = undefined;
+        doc.trip.booking = undefined;
+      }
+    }
+  }
+  next();
+});
+
+const Booking = mongoose.model("Booking", bookingSchema);
 
 module.exports = Booking;

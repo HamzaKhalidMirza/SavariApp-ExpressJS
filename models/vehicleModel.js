@@ -65,14 +65,14 @@ const vehicleSchema = new mongoose.Schema(
     }
 );
 
-vehicleSchema.pre(/^find/, function (next) {
-    this.populate({
-        path: 'driver',
-        select: `-photoAvatar -photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
-        -isActive -createdAt -ratingsAverage -ratingsQuantity`
-    });
-    next();
-});
+// vehicleSchema.pre(/^find/, function (next) {
+//     this.populate({
+//         path: 'driver',
+//         select: `-photoAvatar -photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
+//         -isActive -createdAt -ratingsAverage -ratingsQuantity`
+//     });
+//     next();
+// });
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);
 
