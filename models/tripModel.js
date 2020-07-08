@@ -163,40 +163,42 @@ tripSchema.post(/^find/, function (doc, next) {
       }
     });
   } else {
-    if (doc.driver) {
-      if (Array.isArray(doc.driver)) {
-        doc.driver.forEach((driver) => {
-          driver.trip = undefined;
-          driver.review = undefined;
-        });
-      } else {
-        doc.driver.trip = undefined;
-        doc.driver.review = undefined;
+    if(doc) {
+      if (doc.driver) {
+        if (Array.isArray(doc.driver)) {
+          doc.driver.forEach((driver) => {
+            driver.trip = undefined;
+            driver.review = undefined;
+          });
+        } else {
+          doc.driver.trip = undefined;
+          doc.driver.review = undefined;
+        }
       }
-    }
-    if (doc.review) {
-      if (Array.isArray(doc.review)) {
-        doc.review.forEach((review) => {
-          review.client = undefined;
-          review.driver = undefined;
-          review.trip = undefined;
-        });
-      } else {
-        doc.review.client = undefined;
-        doc.review.driver = undefined;
-        doc.review.trip = undefined;
+      if (doc.review) {
+        if (Array.isArray(doc.review)) {
+          doc.review.forEach((review) => {
+            review.client = undefined;
+            review.driver = undefined;
+            review.trip = undefined;
+          });
+        } else {
+          doc.review.client = undefined;
+          doc.review.driver = undefined;
+          doc.review.trip = undefined;
+        }
       }
-    }
-    if (doc.booking) {
-      if (Array.isArray(doc.booking)) {
-        doc.booking.forEach((booking) => {
-          booking.trip = undefined;
-          booking.client = undefined;
-        });
-      } else {
-        doc.booking.trip = undefined;
-        doc.booking.client = undefined;
-      }
+      if (doc.booking) {
+        if (Array.isArray(doc.booking)) {
+          doc.booking.forEach((booking) => {
+            booking.trip = undefined;
+            booking.client = undefined;
+          });
+        } else {
+          doc.booking.trip = undefined;
+          doc.booking.client = undefined;
+        }
+      }  
     }
   }
   next();

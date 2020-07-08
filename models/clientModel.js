@@ -164,49 +164,51 @@ clientSchema.post(/^find/, function (doc, next) {
           }
           });
     } else {
-      if (doc.booking) {
-        if (Array.isArray(doc.booking)) {
-            doc.booking.forEach((booking) => {
-              booking.client = undefined;
-              if (booking.trip) {
-                if (Array.isArray(booking.trip)) {
-                  booking.trip.forEach((trip) => {
-                    trip.review = undefined;
-                    trip.booking = undefined;
-                  });
-                } else {
-                  booking.trip.review = undefined;
-                  booking.trip.booking = undefined;
-                }
-              }        
+      if(doc) {
+        if (doc.booking) {
+          if (Array.isArray(doc.booking)) {
+              doc.booking.forEach((booking) => {
+                booking.client = undefined;
+                if (booking.trip) {
+                  if (Array.isArray(booking.trip)) {
+                    booking.trip.forEach((trip) => {
+                      trip.review = undefined;
+                      trip.booking = undefined;
+                    });
+                  } else {
+                    booking.trip.review = undefined;
+                    booking.trip.booking = undefined;
+                  }
+                }        
+              });
+            } else {
+              doc.booking.client = undefined;
+              if (doc.booking.trip) {
+                  if (Array.isArray(doc.booking.trip)) {
+                      doc.booking.trip.forEach((trip) => {
+                      trip.review = undefined;
+                      trip.booking = undefined;
+                    });
+                  } else {
+                      doc.booking.trip.review = undefined;
+                      doc.booking.trip.booking = undefined;
+                  }
+                }          
+            }
+        }
+        if (doc.review) {
+          if (Array.isArray(doc.review)) {
+            doc.review.forEach((review) => {
+              review.client = undefined;
+              review.driver = undefined;
+              review.trip = undefined;
             });
           } else {
-            doc.booking.client = undefined;
-            if (doc.booking.trip) {
-                if (Array.isArray(doc.booking.trip)) {
-                    doc.booking.trip.forEach((trip) => {
-                    trip.review = undefined;
-                    trip.booking = undefined;
-                  });
-                } else {
-                    doc.booking.trip.review = undefined;
-                    doc.booking.trip.booking = undefined;
-                }
-              }          
+            doc.review.client = undefined;
+            doc.review.driver = undefined;
+            doc.review.trip = undefined;
           }
-      }
-      if (doc.review) {
-        if (Array.isArray(doc.review)) {
-          doc.review.forEach((review) => {
-            review.client = undefined;
-            review.driver = undefined;
-            review.trip = undefined;
-          });
-        } else {
-          doc.review.client = undefined;
-          doc.review.driver = undefined;
-          doc.review.trip = undefined;
-        }
+        }  
       }
     }
     next();

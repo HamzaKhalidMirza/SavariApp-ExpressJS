@@ -138,29 +138,31 @@ bookingSchema.post(/^find/, function (doc, next) {
       }
     });
   } else {
-    if (doc.client) {
-      if (Array.isArray(doc.client)) {
-        doc.client.forEach((client) => {
-          client.booking = undefined;
-          client.review = undefined;
-        });
-      } else {
-        doc.client.booking = undefined;
-        doc.client.review = undefined;
+    if(doc) {
+      if (doc.client) {
+        if (Array.isArray(doc.client)) {
+          doc.client.forEach((client) => {
+            client.booking = undefined;
+            client.review = undefined;
+          });
+        } else {
+          doc.client.booking = undefined;
+          doc.client.review = undefined;
+        }
       }
-    }
-    if (doc.trip) {
-      if (Array.isArray(doc.trip)) {
-        doc.trip.forEach((trip) => {
-          trip.driver = undefined;
-          trip.review = undefined;
-          trip.booking = undefined;
-        });
-      } else {
-        doc.trip.driver = undefined;
-        doc.trip.review = undefined;
-        doc.trip.booking = undefined;
-      }
+      if (doc.trip) {
+        if (Array.isArray(doc.trip)) {
+          doc.trip.forEach((trip) => {
+            trip.driver = undefined;
+            trip.review = undefined;
+            trip.booking = undefined;
+          });
+        } else {
+          doc.trip.driver = undefined;
+          doc.trip.review = undefined;
+          doc.trip.booking = undefined;
+        }
+      }  
     }
   }
   next();

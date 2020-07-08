@@ -153,18 +153,20 @@ driverSchema.post(/^find/, function (doc, next) {
             }
         });
     } else {
-        if(doc.trip) {
-            if(Array.isArray(doc.trip)) {
-                doc.trip.forEach(trip => {
-                    trip.driver = undefined;
-                    trip.review = undefined;
-                    trip.booking = undefined;
-                });    
-            } else {
-                doc.trip.driver = undefined;
-                doc.trip.review = undefined;
-                doc.trip.booking = undefined;
-            }
+        if(doc){
+            if(doc.trip) {
+                if(Array.isArray(doc.trip)) {
+                    doc.trip.forEach(trip => {
+                        trip.driver = undefined;
+                        trip.review = undefined;
+                        trip.booking = undefined;
+                    });    
+                } else {
+                    doc.trip.driver = undefined;
+                    doc.trip.review = undefined;
+                    doc.trip.booking = undefined;
+                }
+            }    
         }
     }
     next();
