@@ -92,11 +92,6 @@ const tripSchema = new mongoose.Schema(
       ref: "Driver",
       required: [true, "Trip must belong to a driver."],
     },
-    vehicle: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Vehicle",
-      required: [true, "Trip must have a vehicle."],
-    },
   },
   {
     toJSON: { virtuals: true },
@@ -122,17 +117,13 @@ tripSchema.virtual("review", {
 tripSchema.pre(/^find/, function (next) {
   this.populate({
     path: "driver",
-    select: `-photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
-        -isActive -createdAt`,
-  });
-  this.populate({
-    path: "vehicle"
+    select: `-photoAvatar -photoAvatarFile -passwordChangedAt -passwordResetToken -passwordResetExpires
+        -isActive -createdAt -ratingsAverage -ratingsQuantity`,
   });
   next();
 });
 
 tripSchema.post(/^find/, function (doc, next) {
-
   if (Array.isArray(doc)) {
     doc.forEach((trip) => {
       if (trip.driver) {
