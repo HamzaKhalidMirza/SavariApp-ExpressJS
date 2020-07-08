@@ -1,6 +1,8 @@
 const Trip = require('../models/tripModel');
+const Driver = require('../models/driverModel');
 const factory = require('./handlerFactory');
 const catchAsync = require('./../utils/catchAsync');
+// const AppError = require('./../utils/appError');
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -21,6 +23,17 @@ exports.setDriverId = async (req, res, next) => {
   if (!req.body.driver) req.body.driver = req.params.driverId;
   next();
 };
+
+exports.setVehicleId = catchAsync( async (req, res, next) => {
+  const doc = await Driver.findById(req.body.driver).populate('vehicle');
+  
+  if (!doc) {
+    return next(new AppError('No Vehicle found with that ID', 404));
+  }
+  req.body.vehicle = doc.vehicle[0].id;
+
+  next();
+});
 
 exports.getMe = (req, res, next) => {
     req.params.driverId = req.user.id;
