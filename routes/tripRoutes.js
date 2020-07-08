@@ -86,6 +86,7 @@ router
     .post(
         authController.restrictTo('driver'),
         tripController.setDriverId,
+        tripController.setVehicleId,
         tripController.createTrip
     );
 
