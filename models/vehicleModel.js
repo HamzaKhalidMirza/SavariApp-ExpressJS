@@ -8,8 +8,9 @@ const vehicleSchema = new mongoose.Schema(
             required: [true, "Please provide vehicle model name"]
         },
         totalSeats: {
-            type: String,
-            required: [true, "Please provide total seats"]
+            type: Number,
+            required: [true, "Please provide total number of seats."],
+            min: [1, "Total Seats must be at least 1."],
         },
         modelCode: {
             type: String,
