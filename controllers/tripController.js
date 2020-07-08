@@ -85,10 +85,9 @@ exports.getTripsWithin = catchAsync(async (req, res, next) => {
     }
   
     const trips = await Trip.find({
-      startLocation: { $geoWithin: { $centerSphere: [[startLng, startLat], radius] } },
-      endLocation: { $geoWithin: { $centerSphere: [[endLng, endLat], radius] } }
+      startLocation: { $geoWithin: { $centerSphere: [[ startLat, startLng ], radius] } },
+      endLocation: { $geoWithin: { $centerSphere: [[ endLat, endLng ], radius] } }
     });
-    console.log('1',trips);  
     
     res.status(200).json({
       status: 'success',
