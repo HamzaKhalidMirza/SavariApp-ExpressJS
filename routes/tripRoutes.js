@@ -93,7 +93,7 @@ router
 router
     .route('/:id')
     .get(
-        authController.restrictTo('lead-admin', 'assistant-admin'),
+        authController.restrictTo('lead-admin', 'assistant-admin', 'client'),
         tripController.getTrip
     )
     .patch(
