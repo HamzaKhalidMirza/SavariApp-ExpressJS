@@ -55,8 +55,8 @@ exports.getSpecificClientTrip = catchAsync(async (req, res, next) => {
     
 });
 
-exports.getCurrentDriverTrips = factory.getAll(Trip);
-exports.getCurrentDriverTrip = factory.getOne(Trip);
+exports.getCurrentDriverTrips = factory.getAll(Trip, { path: 'booking review' });
+exports.getCurrentDriverTrip = factory.getOne(Trip, { path: 'booking review' });
 
 exports.getCuurentClientTrips = catchAsync(async (req, res, next) => {
 
