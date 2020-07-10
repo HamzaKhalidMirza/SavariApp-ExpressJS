@@ -53,7 +53,7 @@ router
 router
     .route('/:id')
     .get(
-        authController.restrictTo('lead-admin', 'assistant-admin'),
+        authController.restrictTo('lead-admin', 'assistant-admin', 'driver'),
         bookingController.getBooking
     )
     .patch(
