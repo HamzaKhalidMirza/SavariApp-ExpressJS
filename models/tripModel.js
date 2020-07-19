@@ -163,11 +163,9 @@ tripSchema.post(/^find/, function (doc, next) {
         if (Array.isArray(trip.booking)) {
           trip.booking.forEach((booking) => {
             booking.trip = undefined;
-            booking.client = undefined;
           });
         } else {
           trip.booking.trip = undefined;
-          trip.booking.client = undefined;
         }
       }
     });
@@ -201,11 +199,9 @@ tripSchema.post(/^find/, function (doc, next) {
         if (Array.isArray(doc.booking)) {
           doc.booking.forEach((booking) => {
             booking.trip = undefined;
-            booking.client = undefined;
           });
         } else {
           doc.booking.trip = undefined;
-          doc.booking.client = undefined;
         }
       }  
     }

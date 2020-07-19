@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const socketIO = require('socket.io');
 
 process.on('uncaughtException', err => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -28,6 +29,15 @@ const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
+const io = socketIO(server);
+
+/*
+  Sockets
+*/
+require('./sockets/clientSocket')(io);
+require('./sockets/clientTripSocket')(io);
+require('./sockets/driverSocket')(io);
+require('./sockets/driverTripSocket')(io);
 
 process.on('unhandledRejection', err => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
